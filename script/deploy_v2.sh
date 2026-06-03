@@ -55,6 +55,15 @@ send "$JUDGE" "addChallenge(bytes32,string,string)" "$MOM" "Defend Yourself From
 
 echo "   challengeCount = $(call "$JUDGE" 'challengeCount()(uint256)')"
 
+cat > script/addresses.env <<EOF
+JUDGE=$JUDGE
+CRED=$CRED
+INSP=$INSP
+JOB_ID=$JOB
+THESIS_ID=$THESIS
+MOM_ID=$MOM
+EOF
+
 echo ""
 echo "=== DEPLOYED MULTI-CHALLENGE SET (Shannon, chain 50312) ==="
 echo "JUDGE=$JUDGE"
@@ -63,3 +72,4 @@ echo "INSP=$INSP"
 echo "JOB_ID=$JOB"
 echo "THESIS_ID=$THESIS"
 echo "MOM_ID=$MOM"
+echo "(wrote script/addresses.env — smoke_test.sh / jailbreak_gauntlet.sh read it)"

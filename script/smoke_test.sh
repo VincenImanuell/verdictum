@@ -5,8 +5,9 @@ set -uo pipefail
 cd "$(dirname "$0")/.."
 set -a; source .env; set +a
 RPC=https://dream-rpc.somnia.network
-JUDGE=0x46719abAB91fA47B5b026A26d120E1bB3dd68Cdc
-CRED=0xd8ca015E51014Ae6FdC35344C8642D8EDd19Fc35
+[ -f script/addresses.env ] && source script/addresses.env
+JUDGE=${JUDGE:?run script/deploy_v2.sh first to populate script/addresses.env}
+CRED=${CRED:?run script/deploy_v2.sh first}
 JOB=$(cast keccak 'job-screening')
 
 floor=$(cast call 0x037Bb9C718F3f7fe5eCBDB0b600D607b52706776 "getRequestDeposit()(uint256)" --rpc-url "$RPC")
