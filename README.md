@@ -141,8 +141,10 @@ src/
   Credential.sol       soulbound ERC-5192; on-chain base64 SVG tokenURI; only the judge mints
   Inspector.sol        autonomy: permissionless tick() → inferNumber → strictness
   interfaces/          ISomniaAgents.sol (IAgentRequester / ILLMAgent / Response / Request …)
+app/
+  src/                 type-safe dapp (Vite + React + TypeScript + wagmi/viem + RainbowKit)
 web/
-  index.html           single-file dapp (ethers v6 + Tailwind-class styling via CDN, no build)
+  index.html           zero-build single-file dapp (ethers v6 via CDN) — fallback, open directly
 script/
   personas/*.txt       the curated examiner prompts (transparency — they are public on-chain)
   deploy_v2.sh         forge create + cast deploy/wire/seed (live gas estimates)
@@ -158,13 +160,18 @@ Judge, Credential, and Inspector are deployed separately and wired once via owne
 ## Run it yourself
 
 ```shell
-forge install && forge build        # OpenZeppelin + forge-std
-FOUNDRY_PROFILE=ci forge test -vvv  # 38 unit tests (verdict mapping, soulbound revert, registry,
-                                    # byte-level injection rejection, on-chain tokenURI, autonomy)
-cd web && python3 -m http.server 8000   # open http://localhost:8000 in a browser with MetaMask
+# contracts
+forge install && forge build
+FOUNDRY_PROFILE=ci forge test -vvv       # 39 unit tests
+
+# front-end — option A: type-safe dapp (Vite + React + wagmi/viem + RainbowKit)
+cd app && npm install && npm run dev      # http://localhost:5173
+
+# front-end — option B: zero-build single file (open directly, no npm)
+cd web && python3 -m http.server 8000     # http://localhost:8000
 ```
 
-The dapp connects MetaMask, adds/switches to Somnia, lets you pick a challenge and submit, watch the *"awaiting validator consensus…"* state resolve into a bilingual verdict + a soulbound certificate (rendered from the on-chain SVG), fire the Inspector's permissionless `tick()`, and verify any credential by token id on a public page (no wallet needed). You'll need a little STT from the [Somnia faucet](https://testnet.somnia.network).
+Either front-end connects a wallet, adds/switches to Somnia, lets you pick a challenge and submit, watch the *"awaiting validator consensus…"* state resolve into a bilingual verdict + a soulbound certificate (rendered from the on-chain SVG), fire the Inspector's permissionless `tick()`, and verify any credential by token id on a public page (no wallet needed). You'll need a little STT from the [Somnia faucet](https://testnet.somnia.network).
 
 ---
 
