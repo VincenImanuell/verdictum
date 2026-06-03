@@ -3,6 +3,13 @@ src = "src"
 out = "out"
 libs = ["lib"]
 
+# CI runs with FOUNDRY_PROFILE=ci (see .github/workflows/test.yml). Mirror the default
+# settings so the profile exists and CI stops warning "profile `ci` does not exist".
+[profile.ci]
+src = "src"
+out = "out"
+libs = ["lib"]
+
 [rpc_endpoints]
 somnia_testnet = "https://dream-rpc.somnia.network"
 
