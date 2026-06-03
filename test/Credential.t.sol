@@ -42,4 +42,14 @@ contract CredentialTest is Test {
     function test_SupportsErc5192Interface() public view {
         assertTrue(cred.supportsInterface(0xb45a3c0e)); // ERC-5192
     }
+
+    /// @dev Proves the _safeMint -> _mint hardening. This test contract has code but does
+    /// NOT implement onERC721Received, so under _safeMint this mint would revert
+    /// (ERC721InvalidReceiver) — which, inside the platform callback, would lose the verdict.
+    /// With _mint it must succeed, since a soulbound token can never leave the recipient.
+    function test_MintToContractRecipientSucceeds() public {
+        uint256 id = cred.mint(address(this), "SIDANG", 60);
+        assertEq(cred.ownerOf(id), address(this));
+        assertTrue(cred.locked(id));
+    }
 }

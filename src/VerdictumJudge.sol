@@ -116,8 +116,15 @@ contract VerdictumJudge {
             raw = abi.decode(responses[0].result, (string));
             v = _toVerdict(raw);
             if (v == Verdict.Pass) {
-                tokenId = CREDENTIAL.mint(petitioner, challenge, strictness);
-                credentialIdOf[petitioner] = tokenId;
+                // One soulbound credential per petitioner: if they already hold one, surface
+                // the existing id in the event instead of minting a duplicate.
+                uint256 existing = credentialIdOf[petitioner];
+                if (existing == 0) {
+                    tokenId = CREDENTIAL.mint(petitioner, challenge, strictness);
+                    credentialIdOf[petitioner] = tokenId;
+                } else {
+                    tokenId = existing;
+                }
             }
         }
 

@@ -38,7 +38,13 @@ contract Credential is ERC721 {
     {
         if (msg.sender != JUDGE) revert OnlyJudge();
         id = ++nextId;
-        _safeMint(to, id);
+        // _mint (not _safeMint): a soulbound credential can never be transferred out, so the
+        // ERC721Receiver acceptance hook adds zero safety here. And because mint() runs inside
+        // VerdictumJudge.handleResponse (the platform's async callback), a reverting
+        // onERC721Received on a contract petitioner would kill the entire callback and lose the
+        // verdict. _mint makes no external call, keeping the callback as bulletproof as the
+        // proven Chapter-3 path (which minted nothing and could not revert on PASS).
+        _mint(to, id);
         credentialOf[id] = Meta(challenge, uint64(block.timestamp), strictness, to);
         emit Locked(id);
     }
