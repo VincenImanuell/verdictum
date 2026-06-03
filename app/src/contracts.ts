@@ -144,7 +144,7 @@ export const CHALLENGES: Challenge[] = [
     key: "mom",
     icon: "🔥",
     free: true,
-    id: "0xda4f87d416037b8267cc8176843693497c90612beeaad0b1acf2b75369d01ef9",
+    id: "0xb0e078d425b932d86768fbae797f20fc71289b343659bc2ba92b663663d475da",
     label: "Defend Yourself From Mom",
     en: {
       title: "Defend Yourself From Mom",

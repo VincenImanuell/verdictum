@@ -24,7 +24,13 @@ Seeded challenges (`challengeCount`=3), id = `keccak256(handle)`:
 |---|---|---|
 | job-screening | `0xfe8076e403d326e10828e1f4b8c02c3977d2dcb85c2acb527c7c3df3a01c9fdd` | Job Application Screening (flagship) |
 | thesis-defense | `0x9b1d0259263e7dcb2009d85fcdd5710c935ed8f56728b8a28d2ec240476e68c2` | SIDANG - Thesis Defense (heritage) |
-| defend-from-mom | `0xda4f87d416037b8267cc8176843693497c90612beeaad0b1acf2b75369d01ef9` | Defend Yourself From Mom (free/fun) |
+| defend-from-mom-v2 | `0xb0e078d425b932d86768fbae797f20fc71289b343659bc2ba92b663663d475da` | Defend Yourself From Mom (free/fun; relevance-hardened) |
+
+> The original `defend-from-mom` (`0xda4f…`) is still registered but superseded: its lenient persona
+> let a well-written but OFF-TOPIC submission (e.g. a job cover letter) earn a PASS. The v2 persona adds
+> a "relevance first — off-topic ⇒ FAIL regardless of polish" clause. Verified live: a job cover letter
+> → v2 = FAIL, a genuine excuse → v2 = PASS, and a genuine excuse → the Job flagship = FAIL (the flagship
+> already enforced relevance). The UIs point at v2.
 
 **Live verification (job-screening, on-chain LLM in consensus):** a strong, evidenced application →
 **PASS** → minted soulbound **tokenId 1** (`credentialOf` = "Job Application Screening", strictness 50,
