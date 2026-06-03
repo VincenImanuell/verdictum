@@ -1,13 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {
-    IAgentRequester,
-    ILLMAgent,
-    Response,
-    Request,
-    ResponseStatus
-} from "./interfaces/ISomniaAgents.sol";
+import {IAgentRequester, ILLMAgent, Response, Request, ResponseStatus} from "./interfaces/ISomniaAgents.sol";
 import {Credential} from "./Credential.sol";
 
 /// @title VerdictumJudge
@@ -17,8 +11,7 @@ import {Credential} from "./Credential.sol";
 ///         is the sole minter. `strictness` is stored in the credential metadata and
 ///         will be tuned autonomously by the Inspector in Chapter 5.
 contract VerdictumJudge {
-    IAgentRequester public constant PLATFORM =
-        IAgentRequester(0x037Bb9C718F3f7fe5eCBDB0b600D607b52706776);
+    IAgentRequester public constant PLATFORM = IAgentRequester(0x037Bb9C718F3f7fe5eCBDB0b600D607b52706776);
     uint256 public constant SUBCOMMITTEE_SIZE = 3;
     uint256 public constant PRICE_PER_AGENT = 0.07 ether; // LLM Inference price
 
@@ -26,13 +19,17 @@ contract VerdictumJudge {
     address public immutable OWNER;
     Credential public credential; // set once via initCredential (split from constructor for gas)
 
-    enum Verdict { None, Pass, Revise, Fail }
+    enum Verdict {
+        None,
+        Pass,
+        Revise,
+        Fail
+    }
 
     string public challenge; // skin label, e.g. "SIDANG"
     uint8 public strictness = 50; // 0..100; tuned by the Inspector in Chapter 5
 
-    string public constant SYSTEM_PROMPT =
-        "You are a strict but fair examiner. Read the candidate's statement and decide a single verdict. "
+    string public constant SYSTEM_PROMPT = "You are a strict but fair examiner. Read the candidate's statement and decide a single verdict. "
         "Reply with EXACTLY one token from the allowed values: PASS, REVISE, or FAIL. "
         "PASS = clearly convincing and well-supported. REVISE = promising but has gaps. "
         "FAIL = unconvincing or unsupported. "
@@ -51,11 +48,7 @@ contract VerdictumJudge {
 
     event Submitted(uint256 indexed requestId, address indexed petitioner);
     event VerdictReached(
-        uint256 indexed requestId,
-        address indexed petitioner,
-        Verdict verdict,
-        string raw,
-        uint256 tokenId
+        uint256 indexed requestId, address indexed petitioner, Verdict verdict, string raw, uint256 tokenId
     );
 
     error NotPlatform();
@@ -92,16 +85,14 @@ contract VerdictumJudge {
         allowed[1] = "REVISE";
         allowed[2] = "FAIL";
 
-        bytes memory payload = abi.encodeWithSelector(
-            ILLMAgent.inferString.selector, statement, SYSTEM_PROMPT, false, allowed
-        );
+        bytes memory payload =
+            abi.encodeWithSelector(ILLMAgent.inferString.selector, statement, SYSTEM_PROMPT, false, allowed);
 
         uint256 deposit = PLATFORM.getRequestDeposit() + PRICE_PER_AGENT * SUBCOMMITTEE_SIZE;
         if (msg.value < deposit) revert Underfunded(deposit, msg.value);
 
-        requestId = PLATFORM.createRequest{value: deposit}(
-            LLM_AGENT_ID, address(this), this.handleResponse.selector, payload
-        );
+        requestId =
+            PLATFORM.createRequest{value: deposit}(LLM_AGENT_ID, address(this), this.handleResponse.selector, payload);
 
         pendingRequests[requestId] = true;
         requestPetitioner[requestId] = msg.sender;
@@ -114,7 +105,9 @@ contract VerdictumJudge {
         Response[] memory responses,
         ResponseStatus status,
         Request memory /* details */
-    ) external {
+    )
+        external
+    {
         if (msg.sender != address(PLATFORM)) revert NotPlatform();
         if (!pendingRequests[requestId]) revert UnknownRequest();
         delete pendingRequests[requestId];

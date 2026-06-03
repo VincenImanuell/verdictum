@@ -1,13 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {
-    IAgentRequester,
-    IJsonApiAgent,
-    Response,
-    Request,
-    ResponseStatus
-} from "./interfaces/ISomniaAgents.sol";
+import {IAgentRequester, IJsonApiAgent, Response, Request, ResponseStatus} from "./interfaces/ISomniaAgents.sol";
 
 /// @title JsonAgentCaller
 /// @notice Chapter 2 plumbing: prove the async `createRequest -> handleResponse`
@@ -16,8 +10,7 @@ import {
 ///         will clone (swap agentId, price, payload encoding, and decode type).
 contract JsonAgentCaller {
     // --- Somnia constants (testnet) ---
-    IAgentRequester public constant PLATFORM =
-        IAgentRequester(0x037Bb9C718F3f7fe5eCBDB0b600D607b52706776);
+    IAgentRequester public constant PLATFORM = IAgentRequester(0x037Bb9C718F3f7fe5eCBDB0b600D607b52706776);
     uint256 public constant JSON_API_AGENT_ID = 13174292974160097713;
     uint256 public constant SUBCOMMITTEE_SIZE = 3; // platform default
     uint256 public constant PRICE_PER_AGENT = 0.03 ether; // JSON API per-agent price
@@ -54,8 +47,7 @@ contract JsonAgentCaller {
         returns (uint256 requestId)
     {
         // The payload is the ABI-encoded agent-method call (not a live call).
-        bytes memory payload =
-            abi.encodeWithSelector(IJsonApiAgent.fetchUint.selector, url, selector, decimals);
+        bytes memory payload = abi.encodeWithSelector(IJsonApiAgent.fetchUint.selector, url, selector, decimals);
 
         // Read the live deposit floor and add the agent reward pot on top.
         uint256 deposit = PLATFORM.getRequestDeposit() + PRICE_PER_AGENT * SUBCOMMITTEE_SIZE;
@@ -75,7 +67,9 @@ contract JsonAgentCaller {
         Response[] memory responses,
         ResponseStatus status,
         Request memory /* details */
-    ) external {
+    )
+        external
+    {
         if (msg.sender != address(PLATFORM)) revert NotPlatform();
         if (!pendingRequests[requestId]) revert UnknownRequest();
         delete pendingRequests[requestId];

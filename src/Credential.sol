@@ -32,10 +32,7 @@ contract Credential is ERC721 {
     }
 
     /// @notice Mint a soulbound credential. Callable only by the judge.
-    function mint(address to, string calldata challenge, uint8 strictness)
-        external
-        returns (uint256 id)
-    {
+    function mint(address to, string calldata challenge, uint8 strictness) external returns (uint256 id) {
         if (msg.sender != JUDGE) revert OnlyJudge();
         id = ++nextId;
         // _mint (not _safeMint): a soulbound credential can never be transferred out, so the
@@ -57,11 +54,7 @@ contract Credential is ERC721 {
 
     /// @dev Block all transfers; allow only mint (from==0) and burn (to==0).
     /// OZ v5 routes every ownership change through _update.
-    function _update(address to, uint256 tokenId, address auth)
-        internal
-        override
-        returns (address)
-    {
+    function _update(address to, uint256 tokenId, address auth) internal override returns (address) {
         address from = _ownerOf(tokenId);
         if (from != address(0) && to != address(0)) revert Soulbound();
         return super._update(to, tokenId, auth);

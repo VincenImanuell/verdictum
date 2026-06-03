@@ -55,12 +55,10 @@ struct Request {
 /// @notice The Somnia Agents platform contract (testnet 0x037Bb9...6776).
 /// You call createRequest here; it calls your handleResponse back asynchronously.
 interface IAgentRequester {
-    function createRequest(
-        uint256 agentId,
-        address callbackAddress,
-        bytes4 callbackSelector,
-        bytes calldata payload
-    ) external payable returns (uint256 requestId);
+    function createRequest(uint256 agentId, address callbackAddress, bytes4 callbackSelector, bytes calldata payload)
+        external
+        payable
+        returns (uint256 requestId);
 
     function createAdvancedRequest(
         uint256 agentId,
