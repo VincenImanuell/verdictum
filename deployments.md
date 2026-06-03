@@ -10,6 +10,7 @@ Explorer: https://shannon-explorer.somnia.network
 | M3 | `LlmVerdictCaller` | `0x7Bbd1DCfF7359835294ECf18d40c959ABbAad14b` | THE HEART: on-chain LLM verdict via inferString[PASS,REVISE,FAIL]. Strong thesis → PASS; unsupported over-claim → FAIL (both status Success). LLM agentId `12847293847561029384` (empirically confirmed). |
 | M4 | `VerdictumJudge` | `0x490022eA54b1D5E3109CDf741e726B1F7d805e84` | Vertical slice: submit → on-chain LLM verdict → mint SOULBOUND credential on PASS. Constructor `(12847293847561029384, "SIDANG")`. |
 | M4 | `Credential` (ERC-5192 soulbound) | `0x0259876de1C7Ba30D3BfcfC8F1f394A1777E0620` | Deployed via `judge.initCredential()`; `JUDGE` = the VerdictumJudge above (sole minter). name "Verdictum Credential" / "VERDICT". supportsInterface(0xb45a3c0e)=true. |
+| M5 | `Inspector` (autonomy) | `0xA0B9A4814a7CAC3Ad1f48302212e47b927d720a9` | Permissionless `tick()` → on-chain LLM `inferNumber(0..100)` sets `strictness` autonomously (no human). Reads pass-count from the M4 Credential. **First empirical `inferNumber` round-trip:** tick with passes=1 → consensus returned **50** (moderate), `StrictnessUpdated(50→50)`, status Success. |
 
 LLM Inference agentId (confirmed): `12847293847561029384` · JSON API agentId: `13174292974160097713`
 
@@ -32,3 +33,6 @@ the constructor; (2) deploy with the **live** estimate (`forge create`/`cast sen
 - M4 submit thesis (→ requestId 4257137): `0xd94e3a5e4d80f46892c16cb950ef6bbe25999c8a23e2960c887e2bdd9c337679`
 - M4 verdict callback: PASS (status Success), minted soulbound credential tokenId 1 to petitioner `0xf155…1450`. `credentialOf(1)` = ("SIDANG", issuedAt 1780477783, strictness 50, holder petitioner).
 - M4 soulbound proof — transferFrom reverts `Soulbound()` (0xa4420a95); real on-chain attempt mined FAILED: `0xc24a8dbf7376e590cebd7375a7d869a2445224b22c5b087b3bf79283b34d2fb0`
+- M5 Inspector deploy: `0x22d192d5aadf34958951f9abaafb8a4053a49bffff74ccf8fb890e8cab75fa9b` (gasUsed 25,667,747)
+- M5 tick() (requestId 4267919, passes=1): `0x3771eb5ab069b060610a5e0710ba73780b4d50fb1b1d50d7bb6379302a6e16de`
+- M5 inferNumber callback → strictness 50 (StrictnessUpdated 50→50): `0x4da14831b2cddf2d15c6c52fae0096f99e2e5bb824e4e7077a17770f5320e6af`
