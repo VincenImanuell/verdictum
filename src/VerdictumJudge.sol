@@ -24,7 +24,7 @@ contract VerdictumJudge {
 
     uint256 public immutable LLM_AGENT_ID;
     address public immutable OWNER;
-    Credential public immutable CREDENTIAL;
+    Credential public credential; // set once via initCredential (split from constructor for gas)
 
     enum Verdict { None, Pass, Revise, Fail }
 
@@ -62,16 +62,31 @@ contract VerdictumJudge {
     error UnknownRequest();
     error Underfunded(uint256 needed, uint256 sent);
     error NotOwner();
+    error NotInitialized();
+    error AlreadyInitialized();
 
     constructor(uint256 llmAgentId, string memory challengeName) {
         LLM_AGENT_ID = llmAgentId;
         OWNER = msg.sender;
         challenge = challengeName;
-        CREDENTIAL = new Credential(address(this)); // judge is the sole minter
+    }
+
+    /// @notice Deploy this judge's soulbound Credential. Split out of the constructor because
+    ///         deploying the judge AND an inner `new Credential` in a single transaction exceeds
+    ///         Somnia's per-transaction gas budget (~15x EVM gas; the combined tx needs ~60M).
+    ///         One-time and owner-only. The judge itself is the deployer, so Credential.JUDGE ==
+    ///         address(this): the judge stays the sole minter, exactly as if minted in-constructor.
+    function initCredential() external returns (address) {
+        if (msg.sender != OWNER) revert NotOwner();
+        if (address(credential) != address(0)) revert AlreadyInitialized();
+        credential = new Credential(address(this));
+        return address(credential);
     }
 
     /// @notice Submit a free-text statement to be judged by the on-chain LLM.
     function submit(string calldata statement) external payable returns (uint256 requestId) {
+        if (address(credential) == address(0)) revert NotInitialized();
+
         string[] memory allowed = new string[](3);
         allowed[0] = "PASS";
         allowed[1] = "REVISE";
@@ -120,7 +135,7 @@ contract VerdictumJudge {
                 // the existing id in the event instead of minting a duplicate.
                 uint256 existing = credentialIdOf[petitioner];
                 if (existing == 0) {
-                    tokenId = CREDENTIAL.mint(petitioner, challenge, strictness);
+                    tokenId = credential.mint(petitioner, challenge, strictness);
                     credentialIdOf[petitioner] = tokenId;
                 } else {
                     tokenId = existing;
