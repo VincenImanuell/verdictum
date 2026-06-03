@@ -111,6 +111,34 @@
     </div>
   </section>
 
+  <!-- ============ DEWAN AKREDITASI (Inspector) ============ -->
+  <section class="card">
+    <h2>Dewan Akreditasi — autonomy</h2>
+    <div class="sub">Tidak ada manusia yang menyetel kesulitan ujian. Siapa pun bisa memicu
+      <code>tick()</code>: AI di konsensus memutuskan strictness baru (0–100) berdasarkan jumlah kelulusan —
+      makin banyak yang lulus, makin ketat.</div>
+    <div class="row">
+      <div class="muted">Strictness: <b id="insStrict" style="font-size:22px;color:var(--gold)">—</b>/100
+        &nbsp;·&nbsp; recalibrasi otonom: <b id="insTicks">—</b>×</div>
+      <span class="spacer"></span>
+      <button id="tickBtn" class="ghost">Picu Recalibrasi (tick) 🔁</button>
+    </div>
+    <div id="tickStatus" class="status"></div>
+  </section>
+
+  <!-- ============ VERIFIKASI KREDENSIAL ============ -->
+  <section class="card">
+    <h2>Verifikasi Kredensial <span class="muted" style="font-size:13px">(publik · tanpa wallet)</span></h2>
+    <div class="sub">Siapa pun bisa memverifikasi sebuah kredensial langsung dari chain — fakta on-chain,
+      tak bisa dipalsukan atau dicabut siapa pun, termasuk pembuat platform.</div>
+    <div class="row">
+      <input id="verifyId" type="number" min="1" placeholder="Token ID (mis. 1)"
+        style="background:var(--panel2);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font:inherit;width:170px" />
+      <button id="verifyBtn">Cek</button>
+    </div>
+    <div id="verifyOut" class="status"></div>
+  </section>
+
   <footer>
     <div><b>Kontrak (Somnia Shannon testnet, chain 50312):</b></div>
     <div>Judge: <a id="fJudge" target="_blank"></a></div>
@@ -154,6 +182,12 @@ const CRED_ABI = [
 const ro = new ethers.JsonRpcProvider(CFG.rpc);
 const roJudge = new ethers.Contract(CFG.judge, JUDGE_ABI, ro);
 const roCred = new ethers.Contract(CFG.credential, CRED_ABI, ro);
+const INSPECTOR_ABI = [
+  "function strictness() view returns (uint8)",
+  "function tickCount() view returns (uint256)",
+  "function tick() payable returns (uint256)",
+];
+const roIns = new ethers.Contract(CFG.inspector, INSPECTOR_ABI, ro);
 
 let signer = null, account = null;
 
@@ -272,6 +306,65 @@ async function showCredential(tokenId) {
   } catch (e) { /* ignore */ }
 }
 
+// ---- inspector (autonomy) ----
+async function refreshInspector() {
+  try {
+    $("insStrict").textContent = (await roIns.strictness()).toString();
+    $("insTicks").textContent = (await roIns.tickCount()).toString();
+  } catch { $("insStrict").textContent = "?"; }
+}
+
+async function tick() {
+  if (!signer) { try { await connect(); } catch { return; } }
+  const st = $("tickStatus");
+  const setT = (h, s = true) => { st.innerHTML = h; st.classList.toggle("show", s); };
+  $("tickBtn").disabled = true;
+  try {
+    const before = await roIns.tickCount();
+    const ins = new ethers.Contract(CFG.inspector, INSPECTOR_ABI, signer);
+    setT(`<span class="spin"></span> Mengirim tick… konfirmasi di MetaMask.`);
+    const tx = await ins.tick({ value: ethers.parseEther(CFG.deposit) });
+    setT(`<span class="spin"></span> Terkirim, menunggu konsensus inferNumber… <a href="${txUrl(tx.hash)}" target="_blank">${tx.hash.slice(0,10)}…</a>`);
+    await tx.wait();
+    let updated = false;
+    for (let i = 0; i < 30; i++) {
+      if ((await roIns.tickCount()) > before) { updated = true; break; }
+      await new Promise(r => setTimeout(r, 3000));
+    }
+    const s = await roIns.strictness();
+    setT(updated
+      ? `✅ Strictness disetel ulang oleh AI (otonom, tanpa manusia): sekarang <b>${s}</b>/100.`
+      : `<span class="err">Konsensus belum tercapai. Coba lagi.</span>`);
+    refreshInspector(); refreshStrictness();
+  } catch (e) {
+    setT(`<span class="err">Error: ${(e.shortMessage || e.message || e).toString().slice(0,200)}</span>`);
+  } finally { $("tickBtn").disabled = false; }
+}
+
+// ---- public credential verify ----
+async function verify() {
+  const id = $("verifyId").value;
+  const out = $("verifyOut");
+  const setV = (h) => { out.innerHTML = h; out.classList.add("show"); };
+  if (!id || Number(id) < 1) { setV(`<span class="err">Masukkan token ID yang valid.</span>`); return; }
+  try {
+    await roCred.ownerOf(id); // reverts if not minted
+    const [challenge, issuedAt, strictness, holder] = await roCred.credentialOf(id);
+    const locked = await roCred.locked(id);
+    const date = new Date(Number(issuedAt) * 1000).toISOString().slice(0, 19).replace("T", " ");
+    setV(`<div class="kv">
+      <b>Token</b><span>#${id} — VALID ✅</span>
+      <b>Challenge</b><span>${challenge}</span>
+      <b>Strictness</b><span>${strictness}/100</span>
+      <b>Diterbitkan</b><span>${date} UTC</span>
+      <b>Pemegang</b><span><a href="${addrUrl(holder)}" target="_blank">${holder}</a></span>
+      <b>Soulbound</b><span>${locked ? "🔒 ya (tak bisa dipindah)" : "tidak"}</span>
+    </div>`);
+  } catch (e) {
+    setV(`<span class="err">Token #${id} tidak ditemukan / belum diterbitkan.</span>`);
+  }
+}
+
 // ---- init ----
 $("connectBtn").onclick = () => connect().catch(e => alert(e.message || e));
 $("submitBtn").onclick = submit;
@@ -283,7 +376,10 @@ $("thesis").addEventListener("input", (e) => {
 $("fJudge").textContent = CFG.judge; $("fJudge").href = addrUrl(CFG.judge);
 $("fCred").textContent = CFG.credential; $("fCred").href = addrUrl(CFG.credential);
 $("fIns").textContent = CFG.inspector; $("fIns").href = addrUrl(CFG.inspector);
+$("tickBtn").onclick = tick;
+$("verifyBtn").onclick = verify;
 refreshStrictness();
+refreshInspector();
 if (window.ethereum) window.ethereum.on?.("accountsChanged", () => location.reload());
 </script>
 </body>
