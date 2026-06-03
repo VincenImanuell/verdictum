@@ -3,6 +3,24 @@
 Platform (IAgentRequester): `0x037Bb9C718F3f7fe5eCBDB0b600D607b52706776`
 Explorer: https://shannon-explorer.somnia.network
 
+## ⭐ INTEGRATED SET (canonical — use these for the demo/frontend)
+
+The full autonomous loop wired together (Chapter 5 complete). Deployed 2026-06-03.
+
+| Contract | Address | Role |
+|---|---|---|
+| `VerdictumJudge` | `0x4b3571c7690072d3a6cd42bCBb3322f6990119bC` | examiner; reads strictness from the Inspector and injects it into every verdict prompt |
+| `Credential` (ERC-5192) | `0xB4Ef6c7446E4eB901E64F0E6aD25d8e5FD144f4D` | soulbound; `JUDGE` = the judge above (sole minter) |
+| `Inspector` | `0xAd55c4d91181Dd37CF5B821f1E2C93aA27280823` | permissionless `tick()` → `inferNumber(0..100)` sets `strictness` autonomously; reads pass-count from the Credential |
+
+Wiring verified: `judge.credential()`=Credential, `judge.inspector()`=Inspector, `cred.JUDGE()`=judge,
+`inspector.CREDENTIAL()`=Credential, `judge.currentStrictness()`=`inspector.strictness()`=50.
+Live end-to-end: submit (strictness 50 injected) → consensus PASS → soulbound tokenId 1 minted with
+`credentialOf(1)` = ("SIDANG", strictness 50, petitioner). Tx refs below.
+
+> Earlier M4/M5 rows are standalone PROTOTYPES (judge that minted its own credential via initCredential;
+> inspector reading that credential). Superseded by the integrated set above — kept for history.
+
 | Milestone | Contract | Address | Notes |
 |---|---|---|---|
 | M1 | `Counter` (hello-world) | `0xf0C78a961ba70C780aA781988B018dFb3f539256` | store/read a uint; proves compile→deploy→explorer |
@@ -36,3 +54,7 @@ the constructor; (2) deploy with the **live** estimate (`forge create`/`cast sen
 - M5 Inspector deploy: `0x22d192d5aadf34958951f9abaafb8a4053a49bffff74ccf8fb890e8cab75fa9b` (gasUsed 25,667,747)
 - M5 tick() (requestId 4267919, passes=1): `0x3771eb5ab069b060610a5e0710ba73780b4d50fb1b1d50d7bb6379302a6e16de`
 - M5 inferNumber callback → strictness 50 (StrictnessUpdated 50→50): `0x4da14831b2cddf2d15c6c52fae0096f99e2e5bb824e4e7077a17770f5320e6af`
+
+### Integrated set tx references
+- Judge setCredential + Inspector deploy + setInspector: see broadcast / explorer for the wallet txs around block ~399.4M.
+- Integrated submit (→PASS, strictness 50 injected, minted tokenId 1): `0x4f3d72ce437d88f3eb596269aaa8e81e1684ad79113e2169be4883d4d6b4e2f8`
