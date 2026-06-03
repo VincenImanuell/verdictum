@@ -5,9 +5,17 @@ import {Test} from "forge-std/Test.sol";
 import {VerdictumJudge} from "../src/VerdictumJudge.sol";
 import {Credential} from "../src/Credential.sol";
 
-/// @dev Local proof of the two-step deploy refactor (Credential created via initCredential,
-/// not in the constructor, so the on-chain deploy fits Somnia's per-tx gas budget). No
-/// testnet/STT needed. The async submit/verdict path is exercised live on testnet (M4).
+/// @dev Stand-in for the Inspector: anything exposing strictness() can drive the judge.
+contract MockStrictness {
+    uint8 public strictness;
+
+    function set(uint8 s) external {
+        strictness = s;
+    }
+}
+
+/// @dev Local proof of the integrated wiring (setCredential / setInspector / currentStrictness).
+/// The async submit->verdict->mint path is exercised live on testnet.
 contract VerdictumJudgeTest is Test {
     VerdictumJudge internal judge;
     uint256 constant AGENT_ID = 12847293847561029384;
@@ -16,34 +24,64 @@ contract VerdictumJudgeTest is Test {
         judge = new VerdictumJudge(AGENT_ID, "SIDANG");
     }
 
-    function test_NoCredentialUntilInit() public view {
+    function test_InitialState() public view {
         assertEq(address(judge.credential()), address(0));
+        assertEq(address(judge.inspector()), address(0));
+        assertEq(judge.strictness(), 50);
+        assertEq(judge.currentStrictness(), 50); // local fallback until an Inspector is wired
         assertEq(judge.LLM_AGENT_ID(), AGENT_ID);
         assertEq(judge.challenge(), "SIDANG");
         assertEq(judge.OWNER(), address(this));
     }
 
-    function test_SubmitRevertsBeforeInit() public {
+    function test_SubmitRevertsBeforeCredential() public {
         vm.expectRevert(VerdictumJudge.NotInitialized.selector);
         judge.submit("any statement");
     }
 
-    function test_InitCredentialMakesJudgeSoleMinter() public {
-        address cred = judge.initCredential();
-        assertEq(cred, address(judge.credential()));
-        // the judge deployed it, so the judge is the minter
-        assertEq(Credential(cred).JUDGE(), address(judge));
+    function test_SetCredentialWiresSoleMinter() public {
+        Credential cred = new Credential(address(judge));
+        judge.setCredential(address(cred));
+        assertEq(address(judge.credential()), address(cred));
+        assertEq(cred.JUDGE(), address(judge)); // judge is the sole minter
     }
 
-    function test_InitCredentialOwnerOnly() public {
+    function test_SetCredentialRejectsForeignCredential() public {
+        Credential foreign = new Credential(address(0xBEEF)); // JUDGE != judge
+        vm.expectRevert(VerdictumJudge.BadCredential.selector);
+        judge.setCredential(address(foreign));
+    }
+
+    function test_SetCredentialOwnerOnlyAndOneTime() public {
+        Credential cred = new Credential(address(judge));
+
         vm.prank(address(0xBEEF));
         vm.expectRevert(VerdictumJudge.NotOwner.selector);
-        judge.initCredential();
+        judge.setCredential(address(cred));
+
+        judge.setCredential(address(cred));
+        Credential cred2 = new Credential(address(judge));
+        vm.expectRevert(VerdictumJudge.AlreadyInitialized.selector);
+        judge.setCredential(address(cred2));
     }
 
-    function test_InitCredentialIsOneTime() public {
-        judge.initCredential();
+    function test_InspectorOverridesStrictness() public {
+        MockStrictness insp = new MockStrictness();
+        insp.set(82);
+        judge.setInspector(address(insp));
+        assertEq(address(judge.inspector()), address(insp));
+        assertEq(judge.currentStrictness(), 82); // now driven autonomously by the Inspector
+    }
+
+    function test_SetInspectorOwnerOnlyAndOneTime() public {
+        MockStrictness insp = new MockStrictness();
+
+        vm.prank(address(0xBEEF));
+        vm.expectRevert(VerdictumJudge.NotOwner.selector);
+        judge.setInspector(address(insp));
+
+        judge.setInspector(address(insp));
         vm.expectRevert(VerdictumJudge.AlreadyInitialized.selector);
-        judge.initCredential();
+        judge.setInspector(address(insp));
     }
 }
