@@ -43,6 +43,30 @@ contract CredentialTest is Test {
         assertTrue(cred.supportsInterface(0xb45a3c0e)); // ERC-5192
     }
 
+    /// @dev The certificate is fully on-chain: tokenURI returns a base64 data-URI JSON (no server/IPFS).
+    function test_TokenURIIsOnChainDataUri() public {
+        uint256 id = cred.mint(alice, "Job Application Screening", 72);
+        string memory uri = cred.tokenURI(id);
+        // must be an on-chain data URI, not an http/ipfs pointer
+        assertEq(_startsWith(uri, "data:application/json;base64,"), true);
+        assertGt(bytes(uri).length, 200); // non-trivial encoded payload
+    }
+
+    function test_TokenURIRevertsForMissingToken() public {
+        vm.expectRevert();
+        cred.tokenURI(999);
+    }
+
+    function _startsWith(string memory s, string memory prefix) internal pure returns (bool) {
+        bytes memory b = bytes(s);
+        bytes memory p = bytes(prefix);
+        if (b.length < p.length) return false;
+        for (uint256 i = 0; i < p.length; i++) {
+            if (b[i] != p[i]) return false;
+        }
+        return true;
+    }
+
     /// @dev Proves the _safeMint -> _mint hardening. This test contract has code but does
     /// NOT implement onERC721Received, so under _safeMint this mint would revert
     /// (ERC721InvalidReceiver) — which, inside the platform callback, would lose the verdict.
