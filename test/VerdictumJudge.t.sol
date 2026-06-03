@@ -4,7 +4,7 @@ pragma solidity ^0.8.20;
 import {Test} from "forge-std/Test.sol";
 import {VerdictumJudge} from "../src/VerdictumJudge.sol";
 import {Credential} from "../src/Credential.sol";
-import {IAgentRequester} from "../src/interfaces/ISomniaAgents.sol";
+import {IAgentRequester, Response, Request, ResponseStatus} from "../src/interfaces/ISomniaAgents.sol";
 
 /// @dev Stand-in for the Inspector: anything exposing strictness() can drive the judge.
 contract MockStrictness {
@@ -198,6 +198,39 @@ contract VerdictumJudgeTest is Test {
         );
         vm.expectRevert(); // Underfunded(needed, sent)
         judge.submit{value: 0.01 ether}(JOB, "a fine application");
+    }
+
+    /// @dev The safe-decode (external try/catch): a malformed >=64-byte result must NOT revert the
+    /// callback (which would strand the request as pending and lose the verdict). It is a safe no-op.
+    function test_HandleResponseSafeOnMalformedResult() public {
+        _wireCredential();
+        _addJob();
+        vm.mockCall(
+            PLATFORM,
+            abi.encodeWithSelector(IAgentRequester.getRequestDeposit.selector),
+            abi.encode(uint256(0.03 ether))
+        );
+        vm.mockCall(PLATFORM, abi.encodeWithSelector(IAgentRequester.createRequest.selector), abi.encode(uint256(7777)));
+        judge.submit{value: 0.24 ether}(JOB, "A specific, evidenced application.");
+        assertTrue(judge.pendingRequests(7777));
+
+        // 96 bytes of 0xff: passes the >=64 length guard but is NOT a valid ABI-encoded string,
+        // so the inner abi.decode reverts — the try/catch must absorb it.
+        Response[] memory r = new Response[](1);
+        bytes memory garbage = new bytes(96);
+        for (uint256 i = 0; i < garbage.length; i++) {
+            garbage[i] = 0xff;
+        }
+        r[0].result = garbage;
+        r[0].status = ResponseStatus.Success;
+        Request memory req;
+
+        vm.prank(PLATFORM);
+        judge.handleResponse(7777, r, ResponseStatus.Success, req); // must NOT revert
+
+        assertFalse(judge.pendingRequests(7777)); // request closed, not stranded
+        assertEq(uint8(judge.lastVerdict()), uint8(VerdictumJudge.Verdict.None)); // safe no-op
+        assertEq(judge.lastTokenId(), 0); // nothing minted
     }
 
     // --- wiring (credential + inspector) -------------------------------------------------------

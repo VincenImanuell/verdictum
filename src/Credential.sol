@@ -131,7 +131,8 @@ contract Credential is ERC721 {
         uint256 n;
         for (uint256 i; i < b.length; i++) {
             bytes1 ch = b[i];
-            if (ch == 0x22 || ch == 0x3c || ch == 0x3e || ch == 0x26) continue; // " < > &
+            // drop the bytes that would break the JSON/SVG data-URI: " < > & \ and any control char
+            if (ch == 0x22 || ch == 0x3c || ch == 0x3e || ch == 0x26 || ch == 0x5c || uint8(ch) < 0x20) continue;
             out[n++] = ch;
         }
         assembly {
@@ -140,11 +141,12 @@ contract Credential is ERC721 {
         return string(out);
     }
 
-    /// @dev Block all transfers; allow only mint (from==0) and burn (to==0).
-    /// OZ v5 routes every ownership change through _update.
+    /// @dev Soulbound AND irrevocable: allow only mint (from==0). Every transfer and every burn
+    /// (any from!=0) reverts, so a credential can never move or be destroyed — not by its holder,
+    /// not by the judge, not by the platform's creators. OZ v5 routes all ownership changes here.
     function _update(address to, uint256 tokenId, address auth) internal override returns (address) {
         address from = _ownerOf(tokenId);
-        if (from != address(0) && to != address(0)) revert Soulbound();
+        if (from != address(0)) revert Soulbound();
         return super._update(to, tokenId, auth);
     }
 

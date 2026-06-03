@@ -78,8 +78,9 @@ contract JsonAgentCaller {
         lastStatus = status;
 
         uint256 value;
-        // Only decode on success — decoding a Failed/empty result would revert.
-        if (status == ResponseStatus.Success && responses.length > 0) {
+        // Only decode on success, and only with >= 32 bytes — decoding a Failed/empty/short result
+        // would revert and strand the request.
+        if (status == ResponseStatus.Success && responses.length > 0 && responses[0].result.length >= 32) {
             value = abi.decode(responses[0].result, (uint256));
             lastValue = value;
         }

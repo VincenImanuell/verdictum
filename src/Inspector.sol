@@ -87,7 +87,9 @@ contract Inspector {
         lastRequestId = requestId;
         lastStatus = status;
 
-        if (status == ResponseStatus.Success && responses.length > 0) {
+        // length guard: a bare int256 needs 32 bytes; a short/malformed result would otherwise revert
+        // the decode and strand this request as pending (the delete above would roll back).
+        if (status == ResponseStatus.Success && responses.length > 0 && responses[0].result.length >= 32) {
             int256 raw = abi.decode(responses[0].result, (int256));
             // inferNumber is asked to bound 0..100; clamp defensively anyway.
             if (raw < 0) raw = 0;

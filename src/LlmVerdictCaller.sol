@@ -91,7 +91,8 @@ contract LlmVerdictCaller {
 
         Verdict v = Verdict.None;
         string memory raw = "";
-        if (status == ResponseStatus.Success && responses.length > 0) {
+        // a valid ABI string is >= 64 bytes; guard so a short/malformed result can't revert the callback
+        if (status == ResponseStatus.Success && responses.length > 0 && responses[0].result.length >= 64) {
             raw = abi.decode(responses[0].result, (string));
             v = _toVerdict(raw);
         }
