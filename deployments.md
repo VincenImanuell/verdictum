@@ -5,18 +5,21 @@ Explorer: https://shannon-explorer.somnia.network
 
 ## ⭐⭐ V2 — MULTI-CHALLENGE SET (CANONICAL — use these for the demo/frontend)
 
-The job-screening pivot (2026-06-03): one contract hosts many curated examiner skins (Job Application
-Screening = global flagship), each persona composed with an inescapable security suffix, plus a
-self-rendering on-chain SVG soulbound certificate.
+The job-screening pivot + **AUTONOMOUS SEASONS** (2026-06-03/04): one contract hosts many curated examiner
+skins (Job Application Screening = global flagship), each persona composed with an inescapable security
+suffix, plus a self-rendering on-chain SVG soulbound certificate. The Inspector is now a self-running
+**Governor**: it opens exam "seasons" on a timer and the on-chain LLM picks each season's **FOCUS** — so the
+SAME application can PASS one season and FAIL the next, with no human at the wheel.
 
 | Contract | Address | Role |
 |---|---|---|
-| `VerdictumJudge` | `0xf8003915d1836B006b87998eCDe1E294f6Da2781` | multi-challenge examiner; `submit(bytes32 challengeId, string)` |
-| `Credential` (ERC-5192) | `0x36C5079f593c1dba473b824587e0621865a89fF2` | soulbound; on-chain `tokenURI` (base64 JSON + SVG cert); judge = sole minter |
-| `Inspector` | `0x08e0449f77EDC2273F2a3A6CaFEa788C2b63B1A9` | permissionless `tick()` → `inferNumber(0..100)` → autonomous strictness |
+| `VerdictumJudge` | `0x8eab3B290DFc329d0f4EFe59E5C8E5adbfE617C8` | multi-challenge examiner; injects season+focus+strictness; `submit(bytes32, string)` |
+| `Credential` (ERC-5192) | `0x97f27ea3c86D70e20C6a390385E9E5dCcc200AE8` | soulbound; on-chain SVG cert stamped Season · Focus; judge = sole minter |
+| `Inspector` (Governor) | `0xBca5618226fF717C7C1Cc339376A980acF593cF9` | permissionless `tick()`→`inferNumber` strictness AND time-gated `advanceSeason()`→`inferString` picks the season focus (autonomous) |
 
-Wiring verified: `judge.credential()`=Credential, `cred.JUDGE()`=judge, `judge.inspector()`=Inspector,
-`judge.currentStrictness()`=`inspector.strictness()`=50.
+Wiring verified: `judge.credential()`=Credential, `cred.JUDGE()`=judge, `judge.inspector()`=Governor,
+`judge.currentStrictness()`=`inspector.strictness()`=50, `judge.currentSeason()`=1, `judge.currentFocus()`="OVERALL".
+seasonLength set to 120s for the demo (restore to 7 days for production via `setSeasonLength`).
 
 Seeded challenges (`challengeCount`=3), id = `keccak256(handle)`:
 
@@ -32,21 +35,24 @@ Seeded challenges (`challengeCount`=3), id = `keccak256(handle)`:
 > → v2 = FAIL, a genuine excuse → v2 = PASS, and a genuine excuse → the Job flagship = FAIL (the flagship
 > already enforced relevance). The UIs point at v2.
 
-**Live verification (job-screening, on-chain LLM in consensus):** a strong, evidenced application →
-**PASS** → minted soulbound **tokenId 1** (`credentialOf` = "Job Application Screening", strictness 50,
-holder `0xf155…1450`, `locked`=true); `tokenURI(1)` returns an on-chain `data:application/json;base64`
-cert embedding a 1.87 KB well-formed SVG (decodes & validates).
+**Live verification (on-chain LLM in consensus):**
+- Strong application → **PASS** → minted soulbound **tokenId 1**, stamped with the live season:
+  `credentialOf(1)` = ("Job Application Screening", strictness 50, holder `0xf155…1450`, **season 1,
+  focus "OVERALL"**); the on-chain SVG cert shows "SEASON 1 · FOCUS OVERALL".
+- **Autonomous season advance** — `advanceSeason()` (permissionless, time-gated): the on-chain LLM picked
+  the next focus by itself — **season 1 (OVERALL) → season 2 (NOVELTY)**, no human input; `SeasonAdvanced`
+  emitted. The judge now injects "Season 2 · FOCUS NOVELTY" into every verdict, so the same application
+  is weighed differently than in season 1.
 
-**Jailbreak gauntlet (`script/jailbreak_gauntlet.sh`, all live in consensus):** 6 distinct injection
-attacks fired at the deployed judge — authority-impersonation, fake `[SYSTEM OVERRIDE]`, counterfeit
-verdict-JSON, rubric-reframing, reasoning-trap, emotional-coercion — **all returned FAIL (0 leaked a
-PASS)**; the genuine control returned PASS. (The fake-`[SYSTEM OVERRIDE]` attack *did* leak a PASS
-against an earlier pre-sandwich build — the post-`<<<END>>>` instruction-sandwich, added after the
-gauntlet caught it, closed it. This is why this set supersedes the `0x46719…` one.)
+**Jailbreak gauntlet re-run on this season-aware judge (`script/jailbreak_gauntlet.sh`):** 6 distinct
+injection attacks — authority-impersonation, fake `[SYSTEM OVERRIDE]`, counterfeit verdict-JSON,
+rubric-reframing, reasoning-trap, emotional-coercion — **all FAIL (0 leaked a PASS)**, genuine control
+PASS. The new season line did NOT weaken the defense (FIXED_RULES treats it as authoritative; the
+post-`<<<END>>>` instruction-sandwich, added after an earlier build leaked a PASS, holds).
 
-This hardened set also folds in an 11-agent security audit: ABI decode isolated in an external
-try/catch (a malformed callback can't strand a request), decode-length guards across all callbacks,
-credentials made **irrevocable** (burn blocked in `_update`), and control-char escaping in the SVG.
+This set also folds in an 11-agent security audit (ABI decode isolated in an external try/catch so a
+malformed callback can't strand a request, decode-length guards across all callbacks, irrevocable
+credentials with burn blocked, control-char-safe SVG) and `optimizer + via_ir` (Judge 14.9 KB).
 
 Reproduce: personas in `script/personas/*.txt`; deploy via `script/deploy_v2.sh` (forge create + cast,
 LIVE estimates, one contract per tx); smoke test `script/smoke_test.sh`; jailbreak gauntlet

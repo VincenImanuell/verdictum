@@ -4,7 +4,7 @@
 
 No server scored you. No company stamped your certificate. The chain did — and no one, not even the people who deployed Verdictum, can fake or revoke the result.
 
-Verdictum is a **consensus-validated AI examiner** plus an **unforgeable, soulbound credential** for any high-stakes *written* argument. You submit free text; an on-chain LLM running *inside Somnia's validator consensus* returns a verdict (`PASS` / `REVISE` / `FAIL`); a `PASS` mints a non-transferable, self-rendering certificate to your wallet. A second, fully autonomous agent re-tunes how strict the examiner is — with no human in the loop.
+Verdictum is a **consensus-validated AI examiner** plus an **unforgeable, soulbound credential** for any high-stakes *written* argument. You submit free text; an on-chain LLM running *inside Somnia's validator consensus* returns a verdict (`PASS` / `REVISE` / `FAIL`); a `PASS` mints a non-transferable, self-rendering certificate to your wallet. A second, fully autonomous agent **runs the exam itself** — recalibrating how strict it is and choosing, each season, what to scrutinise most — with no human in the loop.
 
 > Live on Somnia Shannon testnet. Every verdict below is a real on-chain transaction (addresses + explorer links at the end).
 
@@ -88,11 +88,16 @@ Only a tiny surface ever enters consensus: **one of three enum values, plus one 
 
 ---
 
-## The autonomy layer — the Inspector
+## The autonomy layer — a self-running Governor (exam seasons)
 
-`Inspector.tick()` is **permissionless** — anyone can call it, there is no admin gate, and that is the point. Each tick asks the on-chain LLM (via `inferNumber`, clamped `0..100`), grounded in how many candidates have already passed, *"how strict should the examiner be right now?"* and overwrites a global `strictness`. The judge reads that value and injects it into every verdict prompt.
+The second agent doesn't just set a number — it **runs the institution itself.** Both of its functions are **permissionless** (no admin gate) and both are decided by the LLM in consensus, not by a human:
 
-So **the world tightens and loosens on its own.** Seed a few passes → `tick()` → the AI raises strictness with no human input → a borderline application that previously **PASSed now FAILs.** That is the "autonomous performance" axis, made diegetic.
+- **`tick()`** asks `inferNumber` (clamped `0..100`), grounded in how many have already passed, *"how strict should the examiner be?"* and overwrites a global `strictness`.
+- **`advanceSeason()`** is **time-gated**: once a season is due, anyone can poke it, and the contract asks `inferString` (from a fixed set — `EVIDENCE / METHODOLOGY / NOVELTY / ROLE_FIT / HONESTY / OVERALL`) what the examiner should **scrutinise most** next season, opens a new season, and emits a ruling.
+
+The judge injects both the season **focus** and the **strictness** into every verdict, so **the same application can PASS one season and FAIL the next** — the institution moved, not the paperwork. Each credential is even stamped with the season and focus it was won under. Proven live: `advanceSeason()` autonomously moved the world from *Season 1 · OVERALL* to *Season 2 · NOVELTY*, with no human input. A keeper (`script/heartbeat.sh`) pokes both functions on a clock so the world genuinely runs by itself.
+
+That is the "autonomous performance" axis made load-bearing: **an un-bribable accreditation institution that sets its own standard.**
 
 ---
 
@@ -120,9 +125,9 @@ A `PASS` mints an **ERC-5192 soulbound** token: non-transferable by design (a cr
 
 | Contract | Address | Role |
 |---|---|---|
-| `VerdictumJudge` | [`0xf8003915d1836B006b87998eCDe1E294f6Da2781`](https://shannon-explorer.somnia.network/address/0xf8003915d1836B006b87998eCDe1E294f6Da2781) | multi-challenge examiner |
-| `Credential` (ERC-5192) | [`0x36C5079f593c1dba473b824587e0621865a89fF2`](https://shannon-explorer.somnia.network/address/0x36C5079f593c1dba473b824587e0621865a89fF2) | soulbound, self-rendering SVG cert |
-| `Inspector` | [`0x08e0449f77EDC2273F2a3A6CaFEa788C2b63B1A9`](https://shannon-explorer.somnia.network/address/0x08e0449f77EDC2273F2a3A6CaFEa788C2b63B1A9) | autonomous strictness |
+| `VerdictumJudge` | [`0x8eab3B290DFc329d0f4EFe59E5C8E5adbfE617C8`](https://shannon-explorer.somnia.network/address/0x8eab3B290DFc329d0f4EFe59E5C8E5adbfE617C8) | multi-challenge examiner |
+| `Credential` (ERC-5192) | [`0x97f27ea3c86D70e20C6a390385E9E5dCcc200AE8`](https://shannon-explorer.somnia.network/address/0x97f27ea3c86D70e20C6a390385E9E5dCcc200AE8) | soulbound, self-rendering SVG cert |
+| `Inspector` (Governor) | [`0xBca5618226fF717C7C1Cc339376A980acF593cF9`](https://shannon-explorer.somnia.network/address/0xBca5618226fF717C7C1Cc339376A980acF593cF9) | autonomous strictness + self-running exam seasons (LLM-chosen focus) |
 
 - **Somnia Platform** (`IAgentRequester`): `0x037Bb9C718F3f7fe5eCBDB0b600D607b52706776`
 - **On-chain LLM agentId** (in consensus): `12847293847561029384` · **RPC**: `https://dream-rpc.somnia.network` · **Token**: STT

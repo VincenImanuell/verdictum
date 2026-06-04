@@ -41,10 +41,14 @@ INSP=$(create src/Inspector.sol:Inspector "$AGENT" "$CRED");           echo "   
 echo ">> setInspector..."
 send "$JUDGE" "setInspector(address)" "$INSP"
 echo "   currentStrictness = $(call "$JUDGE" 'currentStrictness()(uint8)')  inspector.strictness = $(call "$INSP" 'strictness()(uint8)')"
+echo "   season = $(call "$JUDGE" 'currentSeason()(uint32)')  focus = $(call "$JUDGE" 'currentFocus()(string)')"
+echo ">> setSeasonLength(120) — short seasons for the live demo (restore to 7 days for production)..."
+send "$INSP" "setSeasonLength(uint64)" 120
+echo "   seasonLength = $(call "$INSP" 'seasonLength()(uint64)')  seasonDueAt = $(call "$INSP" 'seasonDueAt()(uint256)')"
 
 JOB=$(cast keccak 'job-screening')
 THESIS=$(cast keccak 'thesis-defense')
-MOM=$(cast keccak 'defend-from-mom')
+MOM=$(cast keccak 'defend-from-mom-v2')
 
 echo ">> addChallenge: Job Application Screening (flagship)..."
 send "$JUDGE" "addChallenge(bytes32,string,string)" "$JOB" "Job Application Screening" "$(cat script/personas/job-screening.txt)"

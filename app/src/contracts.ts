@@ -3,9 +3,9 @@ import type { Address, Hex } from "viem";
 /// Season-aware multi-challenge set — Somnia Shannon (see repo/deployments.md).
 /// NOTE: addresses are updated by script/deploy_v2.sh on each redeploy.
 export const ADDR = {
-  judge: "0xf8003915d1836B006b87998eCDe1E294f6Da2781" as Address,
-  credential: "0x36C5079f593c1dba473b824587e0621865a89fF2" as Address,
-  inspector: "0x08e0449f77EDC2273F2a3A6CaFEa788C2b63B1A9" as Address,
+  judge: "0x8eab3B290DFc329d0f4EFe59E5C8E5adbfE617C8" as Address,
+  credential: "0x97f27ea3c86D70e20C6a390385E9E5dCcc200AE8" as Address,
+  inspector: "0xBca5618226fF717C7C1Cc339376A980acF593cF9" as Address,
   platform: "0x037Bb9C718F3f7fe5eCBDB0b600D607b52706776" as Address,
 } as const;
 

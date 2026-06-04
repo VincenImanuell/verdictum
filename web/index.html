@@ -279,9 +279,9 @@ footer{border-top:1px solid var(--hairline);margin-top:34px;padding:24px 0 40px;
 
 <script>
 const A = {
-  judge: "0xf8003915d1836B006b87998eCDe1E294f6Da2781",
-  cred:  "0x36C5079f593c1dba473b824587e0621865a89fF2",
-  insp:  "0x08e0449f77EDC2273F2a3A6CaFEa788C2b63B1A9",
+  judge: "0x8eab3B290DFc329d0f4EFe59E5C8E5adbfE617C8",
+  cred:  "0x97f27ea3c86D70e20C6a390385E9E5dCcc200AE8",
+  insp:  "0xBca5618226fF717C7C1Cc339376A980acF593cF9",
   platform:"0x037Bb9C718F3f7fe5eCBDB0b600D607b52706776",
 };
 const RPC = "https://dream-rpc.somnia.network";
@@ -320,7 +320,7 @@ const J_ABI = [
   "event VerdictReached(uint256 indexed requestId, address indexed petitioner, uint8 verdict, string raw, uint256 tokenId)"
 ];
 const C_ABI = [
-  "function credentialOf(uint256) view returns (string challenge, uint64 issuedAt, uint8 strictness, address holder)",
+  "function credentialOf(uint256) view returns (string challenge, uint64 issuedAt, uint8 strictness, address holder, uint32 season, string focus)",
   "function tokenURI(uint256) view returns (string)",
   "function locked(uint256) view returns (bool)",
   "function ownerOf(uint256) view returns (address)"
