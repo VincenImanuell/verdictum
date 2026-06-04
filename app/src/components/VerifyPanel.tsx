@@ -10,6 +10,8 @@ interface Receipt {
   issuedAt: bigint;
   strictness: number;
   holder: string;
+  season: number;
+  focus: string;
   locked: boolean;
 }
 
@@ -32,7 +34,16 @@ export default function VerifyPanel() {
         client.readContract({ address: ADDR.credential, abi: credAbi, functionName: "tokenURI", args: [tid] }),
       ]);
       const json = JSON.parse(atob((uri as string).split(",")[1]));
-      setData({ img: json.image, challenge: m[0], issuedAt: m[1], strictness: Number(m[2]), holder: m[3], locked });
+      setData({
+        img: json.image,
+        challenge: m[0],
+        issuedAt: m[1],
+        strictness: Number(m[2]),
+        holder: m[3],
+        season: Number(m[4]),
+        focus: m[5],
+        locked,
+      });
       setState("ok");
     } catch {
       setState("no");
@@ -72,6 +83,10 @@ export default function VerifyPanel() {
             <div className="v">{data.challenge}</div>
             <div className="k">{t("Strictness", "Strictness")}</div>
             <div className="v mono">{data.strictness}/100</div>
+            <div className="k">{t("Season · Focus", "Musim · Fokus")}</div>
+            <div className="v mono">
+              S{data.season} · {data.focus}
+            </div>
             <div className="k">{t("Issued", "Terbit")}</div>
             <div className="v mono">{issued}</div>
             <div className="k">{t("Holder", "Pemegang")}</div>

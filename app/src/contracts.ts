@@ -1,6 +1,7 @@
 import type { Address, Hex } from "viem";
 
-/** Hardened multi-challenge set — Somnia Shannon (see repo/deployments.md). */
+/// Season-aware multi-challenge set — Somnia Shannon (see repo/deployments.md).
+/// NOTE: addresses are updated by script/deploy_v2.sh on each redeploy.
 export const ADDR = {
   judge: "0xf8003915d1836B006b87998eCDe1E294f6Da2781" as Address,
   credential: "0x36C5079f593c1dba473b824587e0621865a89fF2" as Address,
@@ -19,13 +20,9 @@ export const judgeAbi = [
     ],
     outputs: [{ type: "uint256" }],
   },
-  {
-    type: "function",
-    name: "currentStrictness",
-    stateMutability: "view",
-    inputs: [],
-    outputs: [{ type: "uint8" }],
-  },
+  { type: "function", name: "currentStrictness", stateMutability: "view", inputs: [], outputs: [{ type: "uint8" }] },
+  { type: "function", name: "currentFocus", stateMutability: "view", inputs: [], outputs: [{ type: "string" }] },
+  { type: "function", name: "currentSeason", stateMutability: "view", inputs: [], outputs: [{ type: "uint32" }] },
   {
     type: "event",
     name: "Submitted",
@@ -34,6 +31,8 @@ export const judgeAbi = [
       { name: "petitioner", type: "address", indexed: true },
       { name: "challengeId", type: "bytes32", indexed: true },
       { name: "strictness", type: "uint8", indexed: false },
+      { name: "season", type: "uint32", indexed: false },
+      { name: "focus", type: "string", indexed: false },
     ],
   },
   {
@@ -45,6 +44,8 @@ export const judgeAbi = [
       { name: "verdict", type: "uint8", indexed: false },
       { name: "raw", type: "string", indexed: false },
       { name: "tokenId", type: "uint256", indexed: false },
+      { name: "season", type: "uint32", indexed: false },
+      { name: "focus", type: "string", indexed: false },
     ],
   },
 ] as const;
@@ -60,28 +61,45 @@ export const credAbi = [
       { name: "issuedAt", type: "uint64" },
       { name: "strictness", type: "uint8" },
       { name: "holder", type: "address" },
+      { name: "season", type: "uint32" },
+      { name: "focus", type: "string" },
     ],
   },
-  {
-    type: "function",
-    name: "tokenURI",
-    stateMutability: "view",
-    inputs: [{ type: "uint256" }],
-    outputs: [{ type: "string" }],
-  },
-  {
-    type: "function",
-    name: "locked",
-    stateMutability: "view",
-    inputs: [{ type: "uint256" }],
-    outputs: [{ type: "bool" }],
-  },
+  { type: "function", name: "tokenURI", stateMutability: "view", inputs: [{ type: "uint256" }], outputs: [{ type: "string" }] },
+  { type: "function", name: "locked", stateMutability: "view", inputs: [{ type: "uint256" }], outputs: [{ type: "bool" }] },
+  { type: "function", name: "nextId", stateMutability: "view", inputs: [], outputs: [{ type: "uint256" }] },
 ] as const;
 
 export const inspAbi = [
   { type: "function", name: "tick", stateMutability: "payable", inputs: [], outputs: [{ type: "uint256" }] },
+  { type: "function", name: "advanceSeason", stateMutability: "payable", inputs: [], outputs: [{ type: "uint256" }] },
   { type: "function", name: "strictness", stateMutability: "view", inputs: [], outputs: [{ type: "uint8" }] },
   { type: "function", name: "tickCount", stateMutability: "view", inputs: [], outputs: [{ type: "uint256" }] },
+  { type: "function", name: "season", stateMutability: "view", inputs: [], outputs: [{ type: "uint32" }] },
+  { type: "function", name: "focus", stateMutability: "view", inputs: [], outputs: [{ type: "string" }] },
+  { type: "function", name: "seasonDueAt", stateMutability: "view", inputs: [], outputs: [{ type: "uint256" }] },
+  { type: "function", name: "seasonLength", stateMutability: "view", inputs: [], outputs: [{ type: "uint64" }] },
+  { type: "function", name: "admittedThisSeason", stateMutability: "view", inputs: [], outputs: [{ type: "uint256" }] },
+  {
+    type: "event",
+    name: "SeasonAdvanced",
+    inputs: [
+      { name: "season", type: "uint32", indexed: true },
+      { name: "oldFocus", type: "string", indexed: false },
+      { name: "newFocus", type: "string", indexed: false },
+      { name: "strictness", type: "uint8", indexed: false },
+      { name: "seasonStart", type: "uint64", indexed: false },
+    ],
+  },
+  {
+    type: "event",
+    name: "StrictnessUpdated",
+    inputs: [
+      { name: "oldStrictness", type: "uint8", indexed: false },
+      { name: "newStrictness", type: "uint8", indexed: false },
+      { name: "tickCount", type: "uint256", indexed: false },
+    ],
+  },
 ] as const;
 
 export const platformAbi = [

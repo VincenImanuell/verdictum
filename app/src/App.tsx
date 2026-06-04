@@ -3,18 +3,22 @@ import { useLang } from "./i18n";
 import { CHALLENGES, type Challenge, ADDR } from "./contracts";
 import { EXPLORER } from "./wagmi";
 import Header from "./components/Header";
+import SeasonBanner from "./components/SeasonBanner";
 import ChallengePicker from "./components/ChallengePicker";
 import SubmitPanel from "./components/SubmitPanel";
 import InspectorPanel from "./components/InspectorPanel";
+import Docket from "./components/Docket";
 import VerifyPanel from "./components/VerifyPanel";
 
 export default function App() {
   const { t } = useLang();
   const [selected, setSelected] = useState<Challenge>(CHALLENGES[0]);
+  const [bump, setBump] = useState(0);
 
   return (
     <>
       <Header />
+      <SeasonBanner onChange={() => setBump((b) => b + 1)} />
       <div className="wrap">
         <section className="hero">
           <h1>
@@ -37,6 +41,7 @@ export default function App() {
         <ChallengePicker selected={selected} onSelect={setSelected} />
         <SubmitPanel challenge={selected} />
         <InspectorPanel />
+        <Docket refreshKey={bump} />
         <VerifyPanel />
 
         <footer>

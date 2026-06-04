@@ -9,6 +9,8 @@ interface Meta {
   issuedAt: bigint;
   strictness: number;
   holder: string;
+  season: number;
+  focus: string;
 }
 
 export default function CredentialCard({ tokenId }: { tokenId: bigint }) {
@@ -28,7 +30,7 @@ export default function CredentialCard({ tokenId }: { tokenId: bigint }) {
       if (cancelled) return;
       const json = JSON.parse(atob((uri as string).split(",")[1]));
       setImg(json.image as string);
-      setMeta({ challenge: m[0], issuedAt: m[1], strictness: Number(m[2]), holder: m[3] });
+      setMeta({ challenge: m[0], issuedAt: m[1], strictness: Number(m[2]), holder: m[3], season: Number(m[4]), focus: m[5] });
     })().catch(console.warn);
     return () => {
       cancelled = true;
@@ -53,6 +55,10 @@ export default function CredentialCard({ tokenId }: { tokenId: bigint }) {
           <div className="v">{meta.challenge}</div>
           <div className="k">{t("Strictness at issuance", "Strictness saat terbit")}</div>
           <div className="v mono">{meta.strictness}/100</div>
+          <div className="k">{t("Season · Focus", "Musim · Fokus")}</div>
+          <div className="v mono">
+            S{meta.season} · {meta.focus}
+          </div>
           <div className="k">{t("Holder", "Pemegang")}</div>
           <div className="v mono">{short(meta.holder)}</div>
           <div className="k">{t("Issued", "Terbit")}</div>
