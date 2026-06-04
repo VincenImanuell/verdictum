@@ -47,13 +47,13 @@ send "$INSP" "setSeasonLength(uint64)" 120
 echo "   seasonLength = $(call "$INSP" 'seasonLength()(uint64)')  seasonDueAt = $(call "$INSP" 'seasonDueAt()(uint256)')"
 
 JOB=$(cast keccak 'job-screening')
-THESIS=$(cast keccak 'thesis-defense')
+SOP=$(cast keccak 'statement-of-purpose')
 MOM=$(cast keccak 'defend-from-mom-v2')
 
 echo ">> addChallenge: Job Application Screening (flagship)..."
 send "$JUDGE" "addChallenge(bytes32,string,string)" "$JOB" "Job Application Screening" "$(cat script/personas/job-screening.txt)"
-echo ">> addChallenge: SIDANG Thesis Defense (heritage)..."
-send "$JUDGE" "addChallenge(bytes32,string,string)" "$THESIS" "SIDANG - Thesis Defense" "$(cat script/personas/thesis-defense.txt)"
+echo ">> addChallenge: Statement of Purpose (admissions)..."
+send "$JUDGE" "addChallenge(bytes32,string,string)" "$SOP" "Statement of Purpose" "$(cat script/personas/statement-of-purpose.txt)"
 echo ">> addChallenge: Defend Yourself From Mom (free/fun)..."
 send "$JUDGE" "addChallenge(bytes32,string,string)" "$MOM" "Defend Yourself From Mom" "$(cat script/personas/defend-from-mom.txt)"
 
@@ -64,7 +64,7 @@ JUDGE=$JUDGE
 CRED=$CRED
 INSP=$INSP
 JOB_ID=$JOB
-THESIS_ID=$THESIS
+SOP_ID=$SOP
 MOM_ID=$MOM
 EOF
 
@@ -74,6 +74,6 @@ echo "JUDGE=$JUDGE"
 echo "CRED=$CRED"
 echo "INSP=$INSP"
 echo "JOB_ID=$JOB"
-echo "THESIS_ID=$THESIS"
+echo "SOP_ID=$SOP"
 echo "MOM_ID=$MOM"
 echo "(wrote script/addresses.env — smoke_test.sh / jailbreak_gauntlet.sh read it)"
