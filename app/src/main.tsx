@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import { WagmiProvider } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RainbowKitProvider, darkTheme } from "@rainbow-me/rainbowkit";
+import { BrowserRouter } from "react-router-dom";
 import "@rainbow-me/rainbowkit/styles.css";
 import "./styles.css";
 import { config } from "./wagmi";
@@ -18,7 +19,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           theme={darkTheme({ accentColor: "#5B8DEF", accentColorForeground: "#0A1730", borderRadius: "medium", overlayBlur: "small" })}
           modalSize="compact"
         >
-          <App />
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
         </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
