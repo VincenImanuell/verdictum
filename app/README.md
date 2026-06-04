@@ -29,4 +29,16 @@ public **Verify** page work without a wallet.
 Optional: set `VITE_WC_PROJECT_ID` (free at https://cloud.reown.com) in a `.env` to enable
 WalletConnect / mobile wallets. MetaMask (injected) works without it on desktop.
 
+## Deploy to Vercel (free, zero on-chain cost)
+
+The frontend is static — hosting it costs **no STT**. Reading (Docket, Verify, season state) is free
+for every visitor (`eth_call`); only **writes** (submit / tick / advanceSeason) cost STT, paid by the
+**visitor's own wallet**, never yours.
+
+1. Import the GitHub repo in Vercel → set **Root Directory = `app`** (Vercel reads `app/vercel.json`).
+2. Framework auto-detects **Vite**; build `npm run build`, output `dist` (already in `vercel.json`).
+3. (Recommended) add an Environment Variable **`VITE_WC_PROJECT_ID`** (free from https://cloud.reown.com)
+   so mobile/WalletConnect wallets work; MetaMask works without it.
+4. Deploy. Visitors connect their own wallet + a little STT from the [faucet](https://testnet.somnia.network).
+
 > A **zero-build** single-file version also lives at `../web/index.html` — open it directly, no npm.
