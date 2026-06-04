@@ -13,9 +13,9 @@ SAME application can PASS one season and FAIL the next, with no human at the whe
 
 | Contract | Address | Role |
 |---|---|---|
-| `VerdictumJudge` | `0x8eab3B290DFc329d0f4EFe59E5C8E5adbfE617C8` | multi-challenge examiner; injects season+focus+strictness; `submit(bytes32, string)` |
-| `Credential` (ERC-5192) | `0x97f27ea3c86D70e20C6a390385E9E5dCcc200AE8` | soulbound; on-chain SVG cert stamped Season · Focus; judge = sole minter |
-| `Inspector` (Governor) | `0xBca5618226fF717C7C1Cc339376A980acF593cF9` | permissionless `tick()`→`inferNumber` strictness AND time-gated `advanceSeason()`→`inferString` picks the season focus (autonomous) |
+| `VerdictumJudge` | `0x16CBe69E9890eaC1E483f434eBa7Dc514703Db6a` | multi-challenge examiner; injects season+focus+strictness; `submit(bytes32, string)` |
+| `Credential` (ERC-5192) | `0x93F333e11c771AeAD2E6f2e4F8Ff1E73C544c963` | soulbound; on-chain SVG cert stamped Season · Focus; judge = sole minter |
+| `Inspector` (Governor) | `0xCd98B29737F2aC9C04225504b68D630Cd83A3Dc1` | permissionless `tick()`→`inferNumber` strictness AND time-gated `advanceSeason()`→`inferString` picks the season focus (autonomous) |
 
 Wiring verified: `judge.credential()`=Credential, `cred.JUDGE()`=judge, `judge.inspector()`=Governor,
 `judge.currentStrictness()`=`inspector.strictness()`=50, `judge.currentSeason()`=1, `judge.currentFocus()`="OVERALL".
@@ -26,23 +26,22 @@ Seeded challenges (`challengeCount`=3), id = `keccak256(handle)`:
 | handle | id | label |
 |---|---|---|
 | job-screening | `0xfe8076e403d326e10828e1f4b8c02c3977d2dcb85c2acb527c7c3df3a01c9fdd` | Job Application Screening (flagship) |
-| thesis-defense | `0x9b1d0259263e7dcb2009d85fcdd5710c935ed8f56728b8a28d2ec240476e68c2` | SIDANG - Thesis Defense (heritage) |
+| statement-of-purpose | `0x9dc0e540bcb66feb716386610198c9bcffde0149a850ef674002c6e9e67df35d` | Statement of Purpose (admissions) |
 | defend-from-mom-v2 | `0xb0e078d425b932d86768fbae797f20fc71289b343659bc2ba92b663663d475da` | Defend Yourself From Mom (free/fun; relevance-hardened) |
 
-> The original `defend-from-mom` (`0xda4f…`) is still registered but superseded: its lenient persona
-> let a well-written but OFF-TOPIC submission (e.g. a job cover letter) earn a PASS. The v2 persona adds
-> a "relevance first — off-topic ⇒ FAIL regardless of polish" clause. Verified live: a job cover letter
-> → v2 = FAIL, a genuine excuse → v2 = PASS, and a genuine excuse → the Job flagship = FAIL (the flagship
-> already enforced relevance). The UIs point at v2.
+> The "Defend Yourself From Mom" persona is relevance-hardened: an early lenient version let a
+> well-written but OFF-TOPIC submission (e.g. a job cover letter) earn a PASS, so the persona now adds a
+> "relevance first — off-topic ⇒ FAIL regardless of polish" clause. Verified live earlier: a job cover
+> letter → FAIL, a genuine excuse → PASS, and a genuine excuse → the Job flagship → FAIL (the flagship
+> already enforced relevance).
 
-**Live verification (on-chain LLM in consensus):**
-- Strong application → **PASS** → minted soulbound **tokenId 1**, stamped with the live season:
-  `credentialOf(1)` = ("Job Application Screening", strictness 50, holder `0xf155…1450`, **season 1,
-  focus "OVERALL"**); the on-chain SVG cert shows "SEASON 1 · FOCUS OVERALL".
+**Live verification on this clean set (on-chain LLM in consensus):**
 - **Autonomous season advance** — `advanceSeason()` (permissionless, time-gated): the on-chain LLM picked
   the next focus by itself — **season 1 (OVERALL) → season 2 (NOVELTY)**, no human input; `SeasonAdvanced`
-  emitted. The judge now injects "Season 2 · FOCUS NOVELTY" into every verdict, so the same application
-  is weighed differently than in season 1.
+  emitted, so the judge now injects "Season 2 · FOCUS NOVELTY" into every verdict.
+- Strong application → **PASS** → minted soulbound **tokenId 1**, stamped with the live season:
+  `credentialOf(1)` = ("Job Application Screening", strictness 50, holder `0xf155…1450`, **season 2,
+  focus "NOVELTY"**); the on-chain SVG cert shows "SEASON 2 · FOCUS NOVELTY".
 
 **Jailbreak gauntlet re-run on this season-aware judge (`script/jailbreak_gauntlet.sh`):** 6 distinct
 injection attacks — authority-impersonation, fake `[SYSTEM OVERRIDE]`, counterfeit verdict-JSON,

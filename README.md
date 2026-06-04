@@ -33,18 +33,18 @@ A spoken interview faked over chat would be a weak simulation. So Verdictum targ
 
 The flagship skin, **Job Application Screening**, is a senior recruiter doing a first-pass screen of a written application:
 
-| Mechanic | Contract enum | UI (bilingual) | Consequence |
+| Mechanic | Contract enum | Verdict | Consequence |
 |---|---|---|---|
-| GRANT | `PASS`  | **PASS / LULUS**           | advance to interview → mint soulbound certificate |
-| DEFER | `REVISE`| **REVISE / REVISI**        | promising, fixable — tighten the specifics |
-| DENY  | `FAIL`  | **FAIL / TIDAK LULUS**     | generic, unsupported, or a manipulation attempt |
+| GRANT | `PASS`  | **PASS**   | advance to interview → mint soulbound certificate |
+| DEFER | `REVISE`| **REVISE** | promising, fixable — tighten the specifics |
+| DENY  | `FAIL`  | **FAIL**   | generic, unsupported, or a manipulation attempt |
 
 It rewards concrete specificity, named projects, metrics, and genuine role-fit; it penalises boilerplate, hollow superlatives, and anything that tries to flatter or game the screen — judging *substance*, not the prestige of the school or the native-ness of the English.
 
 **Verdictum is a platform, not one app.** The same contract hosts many curated examiners — just a different persona prompt:
 
-- 💼 **Job Application Screening** — *flagship, global.* Clear the recruiter's written screen.
-- 🎓 **SIDANG — Thesis Defense** — *heritage.* An AI examiner grills a thesis title + abstract (bilingual ID/EN).
+- 💼 **Job Application Screening** — *flagship.* Clear the recruiter's written screen.
+- 🎓 **Statement of Purpose** — *admissions.* An AI committee screens your statement of purpose / personal statement.
 - 🔥 **Defend Yourself From Mom** — *free / for fun.* Top-of-funnel; a credential that's a meme.
 
 One sharp flagship, a general platform underneath — essays, statements of purpose, scholarship and grant applications, certifications. *(Education is the kicker, not the pitch: it happens to make a great study-by-replay tool.)*
@@ -125,9 +125,9 @@ A `PASS` mints an **ERC-5192 soulbound** token: non-transferable by design (a cr
 
 | Contract | Address | Role |
 |---|---|---|
-| `VerdictumJudge` | [`0x8eab3B290DFc329d0f4EFe59E5C8E5adbfE617C8`](https://shannon-explorer.somnia.network/address/0x8eab3B290DFc329d0f4EFe59E5C8E5adbfE617C8) | multi-challenge examiner |
-| `Credential` (ERC-5192) | [`0x97f27ea3c86D70e20C6a390385E9E5dCcc200AE8`](https://shannon-explorer.somnia.network/address/0x97f27ea3c86D70e20C6a390385E9E5dCcc200AE8) | soulbound, self-rendering SVG cert |
-| `Inspector` (Governor) | [`0xBca5618226fF717C7C1Cc339376A980acF593cF9`](https://shannon-explorer.somnia.network/address/0xBca5618226fF717C7C1Cc339376A980acF593cF9) | autonomous strictness + self-running exam seasons (LLM-chosen focus) |
+| `VerdictumJudge` | [`0x16CBe69E9890eaC1E483f434eBa7Dc514703Db6a`](https://shannon-explorer.somnia.network/address/0x16CBe69E9890eaC1E483f434eBa7Dc514703Db6a) | multi-challenge examiner |
+| `Credential` (ERC-5192) | [`0x93F333e11c771AeAD2E6f2e4F8Ff1E73C544c963`](https://shannon-explorer.somnia.network/address/0x93F333e11c771AeAD2E6f2e4F8Ff1E73C544c963) | soulbound, self-rendering SVG cert |
+| `Inspector` (Governor) | [`0xCd98B29737F2aC9C04225504b68D630Cd83A3Dc1`](https://shannon-explorer.somnia.network/address/0xCd98B29737F2aC9C04225504b68D630Cd83A3Dc1) | autonomous strictness + self-running exam seasons (LLM-chosen focus) |
 
 - **Somnia Platform** (`IAgentRequester`): `0x037Bb9C718F3f7fe5eCBDB0b600D607b52706776`
 - **On-chain LLM agentId** (in consensus): `12847293847561029384` · **RPC**: `https://dream-rpc.somnia.network` · **Token**: STT
