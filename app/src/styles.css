@@ -77,7 +77,7 @@ a:hover {
 }
 .section h2 {
   font-family: "Clash Display";
-  font-weight: 600;
+  font-weight: 500;
   font-size: 22px;
   margin: 0 0 4px;
 }
@@ -164,13 +164,13 @@ header.bar {
   place-items: center;
   color: var(--gold);
   font-family: "Clash Display";
-  font-weight: 700;
+  font-weight: 600;
   font-size: 18px;
   background: radial-gradient(circle at 50% 30%, rgba(233, 196, 106, 0.12), transparent);
 }
 .word {
   font-family: "Clash Display";
-  font-weight: 700;
+  font-weight: 600;
   font-size: 21px;
   letter-spacing: 0.04em;
   line-height: 1;
@@ -207,7 +207,7 @@ header.bar {
 }
 .hero h1 {
   font-family: "Clash Display";
-  font-weight: 600;
+  font-weight: 500;
   font-size: clamp(30px, 5vw, 46px);
   line-height: 1.06;
   margin: 0 0 12px;
@@ -276,7 +276,7 @@ header.bar {
 .tile h3 {
   margin: 0;
   font-family: "Clash Display";
-  font-weight: 600;
+  font-weight: 500;
   font-size: 17px;
 }
 .tile p {
@@ -440,7 +440,7 @@ textarea::placeholder {
 }
 .verdict .word {
   font-family: "Clash Display";
-  font-weight: 700;
+  font-weight: 600;
   font-size: clamp(34px, 7vw, 52px);
   letter-spacing: 0.02em;
   line-height: 1;
@@ -702,7 +702,7 @@ footer {
 }
 .seasonttl {
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.15;
 }
 
@@ -777,7 +777,7 @@ footer {
   color: var(--gold);
 }
 .apphead h1 {
-  font-weight: 600;
+  font-weight: 500;
   font-size: clamp(24px, 3.4vw, 32px);
   margin: 8px 0 8px;
   line-height: 1.1;
@@ -821,6 +821,10 @@ footer {
 .lnav-links a:hover {
   color: var(--ink);
   text-decoration: none;
+}
+.lnav-links a.btn-gold,
+.lnav-links a.btn-gold:hover {
+  color: #241a05;
 }
 @media (max-width: 760px) {
   .lnav-links a.hideable {
@@ -878,7 +882,7 @@ footer {
 }
 .lhero h1 {
   font-family: "Clash Display";
-  font-weight: 600;
+  font-weight: 500;
   font-size: clamp(36px, 6vw, 66px);
   line-height: 1.1;
   letter-spacing: -0.02em;
@@ -887,7 +891,7 @@ footer {
   padding-bottom: 0.08em;
 }
 .lhero h1 .g {
-  font-weight: 700;
+  font-weight: 600;
   background: linear-gradient(120deg, var(--gold-hi), var(--gold) 55%, var(--gold-lo));
   -webkit-background-clip: text;
   background-clip: text;
@@ -990,7 +994,7 @@ footer {
 }
 .lsec h2 {
   font-family: "Clash Display";
-  font-weight: 600;
+  font-weight: 500;
   font-size: clamp(28px, 4vw, 42px);
   line-height: 1.08;
   margin: 12px 0 0;
@@ -1040,7 +1044,7 @@ footer {
 }
 .moat-card h3 {
   font-family: "Clash Display";
-  font-weight: 600;
+  font-weight: 500;
   font-size: 22px;
   margin: 16px 0 8px;
 }
@@ -1089,7 +1093,7 @@ footer {
 }
 .flow-step h4 {
   font-family: "Clash Display";
-  font-weight: 600;
+  font-weight: 500;
   font-size: 17px;
   margin: 14px 0 6px;
 }
@@ -1145,7 +1149,7 @@ footer {
 .fchip b {
   color: var(--gold);
   font-family: "Clash Display";
-  font-weight: 600;
+  font-weight: 500;
 }
 .season-panel {
   border: 1px solid var(--hairline);
@@ -1162,7 +1166,7 @@ footer {
 }
 .season-panel .ttl {
   font-family: "Clash Display";
-  font-weight: 600;
+  font-weight: 500;
   font-size: 24px;
   margin: 16px 0 4px;
 }
@@ -1200,7 +1204,7 @@ footer {
   cursor: pointer;
   list-style: none;
   font-family: "Clash Display";
-  font-weight: 600;
+  font-weight: 500;
   font-size: 18px;
   display: flex;
   justify-content: space-between;
@@ -1239,7 +1243,7 @@ footer {
 }
 .lcta-band h2 {
   font-family: "Clash Display";
-  font-weight: 600;
+  font-weight: 500;
   font-size: clamp(30px, 4.4vw, 46px);
   margin: 0;
   letter-spacing: -0.01em;
@@ -1411,7 +1415,7 @@ html {
 }
 .dip h3 {
   font-family: "Clash Display";
-  font-weight: 600;
+  font-weight: 500;
   font-size: 20px;
   margin: 12px 0 8px;
   line-height: 1.18;
@@ -1474,7 +1478,7 @@ html {
 }
 .credband h3 {
   font-family: "Clash Display";
-  font-weight: 600;
+  font-weight: 500;
   font-size: 20px;
   margin: 0 0 8px;
 }
