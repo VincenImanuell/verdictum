@@ -3,20 +3,18 @@ import { useAccount, usePublicClient, useWriteContract } from "wagmi";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { parseEther } from "viem";
 import { ADDR, judgeAbi, inspAbi, platformAbi } from "../contracts";
-import { useLang } from "../i18n";
 
-const FOCUS_DESC: Record<string, { en: string; id: string }> = {
-  EVIDENCE: { en: "concrete proof, data & numbers", id: "bukti konkret, data & angka" },
-  METHODOLOGY: { en: "sound, rigorous method", id: "metode yang kuat & rigor" },
-  NOVELTY: { en: "originality & contribution", id: "orisinalitas & kontribusi" },
-  ROLE_FIT: { en: "direct relevance to the role", id: "relevansi langsung ke peran" },
-  HONESTY: { en: "candor & owned limits", id: "kejujuran & akui batas" },
-  OVERALL: { en: "all qualities, balanced", id: "semua kualitas, seimbang" },
+const FOCUS_DESC: Record<string, { en: string }> = {
+  EVIDENCE: { en: "concrete proof, data & numbers" },
+  METHODOLOGY: { en: "sound, rigorous method" },
+  NOVELTY: { en: "originality & contribution" },
+  ROLE_FIT: { en: "direct relevance to the role" },
+  HONESTY: { en: "candor & owned limits" },
+  OVERALL: { en: "all qualities, balanced" },
 };
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 export default function SeasonBanner({ onChange }: { onChange?: () => void }) {
-  const { lang, t } = useLang();
   const { isConnected } = useAccount();
   const { openConnectModal } = useConnectModal();
   const client = usePublicClient();
@@ -73,10 +71,10 @@ export default function SeasonBanner({ onChange }: { onChange?: () => void }) {
   const ss = remaining % 60;
   const gate =
     strictness < 40
-      ? { en: "lenient", id: "lunak", c: "var(--pass)" }
+      ? { en: "lenient", c: "var(--pass)" }
       : strictness < 70
-        ? { en: "tightening", id: "mengetat", c: "var(--amber)" }
-        : { en: "severe", id: "ketat", c: "var(--fail)" };
+        ? { en: "tightening", c: "var(--amber)" }
+        : { en: "severe", c: "var(--fail)" };
   const fd = FOCUS_DESC[focus] || FOCUS_DESC.OVERALL;
 
   async function advance() {
@@ -112,27 +110,26 @@ export default function SeasonBanner({ onChange }: { onChange?: () => void }) {
         <div className="row" style={{ gap: 14 }}>
           <div className={`seal seasonseal${stamp ? " stamp" : ""}`}>S{season}</div>
           <div>
-            <div className="eyebrow">{t("EXAM SEASON", "MUSIM UJIAN")}</div>
+            <div className="eyebrow">EXAM SEASON</div>
             <div className="seasonttl serif">
-              {t(`Season ${season} · The Court of `, `Musim ${season} · Pengadilan `)}
+              {`Season ${season} · The Court of `}
               <span style={{ color: "var(--gold)" }}>{focus}</span>
             </div>
             <div className="faint" style={{ fontSize: 11.5 }}>
-              {t("scrutinising ", "menyorot ")}
-              {lang === "en" ? fd.en : fd.id} · {t("chosen by the AI, no human", "dipilih AI, tanpa manusia")}
+              scrutinising {fd.en} · chosen by the AI, no human
             </div>
           </div>
         </div>
         <div className="row" style={{ gap: 12, flexWrap: "wrap" }}>
           <span className="pill" style={{ borderColor: gate.c }}>
-            <span className="dot" style={{ background: gate.c }} /> {t("gate", "gerbang")} {strictness}/100 ·{" "}
-            <b style={{ color: gate.c }}>{lang === "en" ? gate.en : gate.id}</b>
+            <span className="dot" style={{ background: gate.c }} /> gate {strictness}/100 ·{" "}
+            <b style={{ color: gate.c }}>{gate.en}</b>
           </span>
-          <span className="pill mono" title={t("until the season may advance", "sampai musim bisa berganti")}>
-            ⏳ {due ? t("season due", "musim jatuh tempo") : `${mm}:${ss.toString().padStart(2, "0")}`}
+          <span className="pill mono" title="until the season may advance">
+            ⏳ {due ? "season due" : `${mm}:${ss.toString().padStart(2, "0")}`}
           </span>
           <button className="btn" disabled={busy || !due} onClick={advance}>
-            {busy ? t("recalibrating…", "rekalibrasi…") : t("Advance season 🔁", "Ganti musim 🔁")}
+            {busy ? "recalibrating…" : "Advance season 🔁"}
           </button>
         </div>
       </div>

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useLang } from "./i18n";
 import { CHALLENGES, type Challenge, ADDR } from "./contracts";
 import { EXPLORER } from "./wagmi";
 import Header from "./components/Header";
@@ -11,7 +10,6 @@ import Docket from "./components/Docket";
 import VerifyPanel from "./components/VerifyPanel";
 
 export default function App() {
-  const { t } = useLang();
   const [selected, setSelected] = useState<Challenge>(CHALLENGES[0]);
   const [bump, setBump] = useState(0);
 
@@ -22,19 +20,15 @@ export default function App() {
       <div className="wrap">
         <section className="hero">
           <h1>
-            {t("An AI judge that lives inside ", "Hakim AI yang hidup di dalam ")}
-            <span className="em">{t("validator consensus", "konsensus validator")}</span>.
+            An AI judge that lives inside <span className="em">validator consensus</span>.
           </h1>
           <p>
-            {t(
-              "A consensus-validated AI examiner and an unforgeable, soulbound credential for any high-stakes written argument. No server scored you. No company stamped your certificate. The chain did — and no one, not even us, can fake or revoke it.",
-              "Examiner AI yang divalidasi konsensus dan kredensial soulbound yang tak bisa dipalsu untuk argumen tertulis bertaruhan tinggi apa pun. Tak ada server yang menilaimu. Tak ada perusahaan yang menstempel sertifikatmu. Chain yang menilai — dan tak seorang pun, termasuk kami, bisa memalsukan atau mencabutnya.",
-            )}
+            A consensus-validated AI examiner and an unforgeable, soulbound credential for any high-stakes written argument. No server scored you. No company stamped your certificate. The chain did — and no one, not even us, can fake or revoke it.
           </p>
           <div className="moat">
-            <span className="pill">⚖ {t("Judged in consensus, not by an off-chain oracle", "Dinilai dalam konsensus, bukan oracle off-chain")}</span>
-            <span className="pill">🔒 {t("Soulbound · ERC-5192", "Soulbound · ERC-5192")}</span>
-            <span className="pill">🤖 {t("Autonomous strictness", "Strictness otonom")}</span>
+            <span className="pill">⚖ Judged in consensus, not by an off-chain oracle</span>
+            <span className="pill">🔒 Soulbound · ERC-5192</span>
+            <span className="pill">🤖 Autonomous strictness</span>
           </div>
         </section>
 
@@ -45,7 +39,7 @@ export default function App() {
         <VerifyPanel />
 
         <footer>
-          <strong className="serif">VERDICTUM</strong> · {t("built for the Somnia Agentathon", "dibangun untuk Somnia Agentathon")}
+          <strong className="serif">VERDICTUM</strong> · built for the Somnia Agentathon
           <div className="addrgrid mono">
             {(
               [
@@ -65,10 +59,7 @@ export default function App() {
             ))}
           </div>
           <div className="faint">
-            {t(
-              "Somnia Shannon testnet · chain 50312 · dev: npm run dev",
-              "Somnia Shannon testnet · chain 50312 · dev: npm run dev",
-            )}
+            Somnia Shannon testnet · chain 50312 · dev: npm run dev
           </div>
         </footer>
       </div>

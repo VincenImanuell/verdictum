@@ -6,7 +6,6 @@ import { RainbowKitProvider, darkTheme } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
 import "./styles.css";
 import { config } from "./wagmi";
-import { LangProvider } from "./i18n";
 import App from "./App";
 
 const queryClient = new QueryClient();
@@ -19,9 +18,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           theme={darkTheme({ accentColor: "#5B8DEF", accentColorForeground: "#0A1730", borderRadius: "medium", overlayBlur: "small" })}
           modalSize="compact"
         >
-          <LangProvider>
-            <App />
-          </LangProvider>
+          <App />
         </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>

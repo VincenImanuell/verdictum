@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { usePublicClient } from "wagmi";
 import { ADDR, judgeAbi, inspAbi, credAbi } from "../contracts";
-import { useLang } from "../i18n";
 
 interface VRow {
   v: number;
@@ -23,7 +22,6 @@ const VLABEL: Record<number, { w: string; c: string }> = {
 const short = (a: string) => `${a.slice(0, 6)}…${a.slice(-4)}`;
 
 export default function Docket({ refreshKey }: { refreshKey?: number }) {
-  const { t, lang } = useLang();
   const client = usePublicClient();
   const [total, setTotal] = useState(0);
   const [strictness, setStrictness] = useState(50);
@@ -71,11 +69,11 @@ export default function Docket({ refreshKey }: { refreshKey?: number }) {
       const rl: Ruling[] = [];
       for (const lg of slogs) {
         const a = lg.args as { season?: number; newFocus?: string };
-        rl.push({ kind: "season", text: `${t("Season", "Musim")} ${Number(a.season ?? 0)} — focus ${a.newFocus ?? ""}` });
+        rl.push({ kind: "season", text: `Season ${Number(a.season ?? 0)} — focus ${a.newFocus ?? ""}` });
       }
       for (const lg of ulogs) {
         const a = lg.args as { oldStrictness?: number; newStrictness?: number };
-        rl.push({ kind: "strict", text: `${t("Strictness", "Strictness")} ${Number(a.oldStrictness ?? 0)} → ${Number(a.newStrictness ?? 0)}` });
+        rl.push({ kind: "strict", text: `Strictness ${Number(a.oldStrictness ?? 0)} → ${Number(a.newStrictness ?? 0)}` });
       }
       setRulings(rl.slice(-8).reverse());
     } catch {
@@ -88,7 +86,7 @@ export default function Docket({ refreshKey }: { refreshKey?: number }) {
     const id = setInterval(load, 6000);
     return () => clearInterval(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [client, refreshKey, lang]);
+  }, [client, refreshKey]);
 
   const totalV = vc.p + vc.r + vc.f;
   const rate = totalV ? Math.round((vc.p / totalV) * 100) : 0;
@@ -96,18 +94,18 @@ export default function Docket({ refreshKey }: { refreshKey?: number }) {
 
   return (
     <section className="section card">
-      <h2>{t("The Docket — the world keeps score", "Docket — dunia mencatat sendiri")}</h2>
+      <h2>The Docket — the world keeps score</h2>
       <p className="muted" style={{ fontSize: 13, margin: "4px 0 14px" }}>
-        {t("Every line below was written by the chain, not by us.", "Tiap baris di bawah ditulis oleh chain, bukan oleh kami.")}
+        Every line below was written by the chain, not by us.
       </p>
 
       <div className="stats">
         <div className="stat">
-          <div className="statlabel">{t("Credentials issued", "Kredensial terbit")}</div>
+          <div className="statlabel">Credentials issued</div>
           <div className="statnum mono">{total}</div>
         </div>
         <div className="stat">
-          <div className="statlabel">{t("Pass-rate", "Tingkat lulus")}</div>
+          <div className="statlabel">Pass-rate</div>
           <div className="statnum mono">{rate}%</div>
           <div className="minibar" style={{ width: "100%", height: 6, marginTop: 6 }}>
             <div style={{ display: "flex", height: "100%" }}>
@@ -117,24 +115,24 @@ export default function Docket({ refreshKey }: { refreshKey?: number }) {
             </div>
           </div>
           <div className="faint" style={{ fontSize: 11, marginTop: 4 }}>
-            {totalV} {t("verdicts", "vonis")}
+            {totalV} verdicts
           </div>
         </div>
         <div className="stat">
-          <div className="statlabel">{t("Current strictness", "Strictness kini")}</div>
+          <div className="statlabel">Current strictness</div>
           <div className="statnum mono">{strictness}/100</div>
         </div>
         <div className="stat">
-          <div className="statlabel">{t("Seasons advanced", "Musim berganti")}</div>
+          <div className="statlabel">Seasons advanced</div>
           <div className="statnum mono">{seasons}×</div>
-          <div className="faint" style={{ fontSize: 11, marginTop: 4 }}>{t("autonomously", "otonom")}</div>
+          <div className="faint" style={{ fontSize: 11, marginTop: 4 }}>autonomously</div>
         </div>
       </div>
 
       <div className="docketcols">
         <div>
-          <div className="eyebrow" style={{ marginBottom: 8 }}>{t("Latest rulings", "Vonis terbaru")}</div>
-          {feed.length === 0 && <div className="faint" style={{ fontSize: 12.5 }}>{t("no verdicts in range yet", "belum ada vonis di rentang ini")}</div>}
+          <div className="eyebrow" style={{ marginBottom: 8 }}>Latest rulings</div>
+          {feed.length === 0 && <div className="faint" style={{ fontSize: 12.5 }}>no verdicts in range yet</div>}
           {feed.map((row, i) => (
             <div key={i} className="docrow">
               <span className="vtag" style={{ color: VLABEL[row.v]?.c, borderColor: VLABEL[row.v]?.c }}>{VLABEL[row.v]?.w}</span>
@@ -144,8 +142,8 @@ export default function Docket({ refreshKey }: { refreshKey?: number }) {
           ))}
         </div>
         <div>
-          <div className="eyebrow" style={{ marginBottom: 8 }}>{t("Autonomous rulings", "Putusan otonom")}</div>
-          {rulings.length === 0 && <div className="faint" style={{ fontSize: 12.5 }}>{t("the board has not yet acted in range", "dewan belum bertindak di rentang ini")}</div>}
+          <div className="eyebrow" style={{ marginBottom: 8 }}>Autonomous rulings</div>
+          {rulings.length === 0 && <div className="faint" style={{ fontSize: 12.5 }}>the board has not yet acted in range</div>}
           {rulings.map((rl, i) => (
             <div key={i} className="docrow">
               <span style={{ color: rl.kind === "season" ? "var(--gold)" : "var(--lapis)" }}>{rl.kind === "season" ? "⚖" : "▲"}</span>

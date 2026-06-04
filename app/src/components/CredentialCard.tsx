@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { usePublicClient } from "wagmi";
 import { ADDR, credAbi } from "../contracts";
 import { EXPLORER } from "../wagmi";
-import { useLang } from "../i18n";
 
 interface Meta {
   challenge: string;
@@ -14,7 +13,6 @@ interface Meta {
 }
 
 export default function CredentialCard({ tokenId }: { tokenId: bigint }) {
-  const { t } = useLang();
   const client = usePublicClient();
   const [img, setImg] = useState<string | null>(null);
   const [meta, setMeta] = useState<Meta | null>(null);
@@ -45,31 +43,31 @@ export default function CredentialCard({ tokenId }: { tokenId: bigint }) {
     <div className="cred" style={{ marginTop: 14 }}>
       <div className="cred-inner">
         <div className="eyebrow" style={{ color: "var(--gold)", marginBottom: 10 }}>
-          {t("Soulbound credential minted", "Kredensial soulbound ter-mint")}
+          Soulbound credential minted
         </div>
         <img src={img} alt="Verdictum certificate" />
         <div className="kv">
-          <div className="k">{t("Token", "Token")}</div>
+          <div className="k">Token</div>
           <div className="v mono">#{tokenId.toString()}</div>
-          <div className="k">{t("Challenge", "Tantangan")}</div>
+          <div className="k">Challenge</div>
           <div className="v">{meta.challenge}</div>
-          <div className="k">{t("Strictness at issuance", "Strictness saat terbit")}</div>
+          <div className="k">Strictness at issuance</div>
           <div className="v mono">{meta.strictness}/100</div>
-          <div className="k">{t("Season · Focus", "Musim · Fokus")}</div>
+          <div className="k">Season · Focus</div>
           <div className="v mono">
             S{meta.season} · {meta.focus}
           </div>
-          <div className="k">{t("Holder", "Pemegang")}</div>
+          <div className="k">Holder</div>
           <div className="v mono">{short(meta.holder)}</div>
-          <div className="k">{t("Issued", "Terbit")}</div>
+          <div className="k">Issued</div>
           <div className="v mono">{issued}</div>
         </div>
         <div className="spread" style={{ marginTop: 12 }}>
           <span className="lock">
-            🔒 {t("Soulbound · ERC-5192 · non-transferable", "Soulbound · ERC-5192 · tak bisa dipindah")}
+            🔒 Soulbound · ERC-5192 · non-transferable
           </span>
           <a target="_blank" href={`${EXPLORER}/token/${ADDR.credential}/instance/${tokenId.toString()}`}>
-            {t("View on explorer ↗", "Lihat di explorer ↗")}
+            View on explorer ↗
           </a>
         </div>
       </div>
