@@ -100,6 +100,57 @@ function useChainStats(): Stats {
   return s;
 }
 
+/** Fetches the most recently minted credential's self-rendered SVG (on-chain tokenURI). */
+function useLatestCert(issued: number): string | null {
+  const client = usePublicClient();
+  const [svg, setSvg] = useState<string | null>(null);
+  useEffect(() => {
+    let live = true;
+    if (!client || issued < 1) {
+      setSvg(null);
+      return;
+    }
+    (async () => {
+      try {
+        const uri = (await client.readContract({
+          address: ADDR.credential,
+          abi: credAbi,
+          functionName: "tokenURI",
+          args: [BigInt(issued - 1)],
+        })) as string;
+        const b64 = uri.split(",")[1];
+        const json = JSON.parse(atob(b64)) as { image?: string };
+        if (live && json.image) setSvg(json.image);
+      } catch {
+        if (live) setSvg(null);
+      }
+    })();
+    return () => {
+      live = false;
+    };
+  }, [client, issued]);
+  return svg;
+}
+
+function useCountUp(target: number, run: boolean): number {
+  const [n, setN] = useState(0);
+  useEffect(() => {
+    if (!run) return;
+    let raf = 0;
+    const start = performance.now();
+    const dur = 900;
+    const tick = (t: number) => {
+      const p = Math.min(1, (t - start) / dur);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setN(Math.round(target * eased));
+      if (p < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [target, run]);
+  return n;
+}
+
 function useReveal() {
   useEffect(() => {
     const els = Array.from(document.querySelectorAll(".reveal"));
@@ -125,6 +176,7 @@ function useReveal() {
 
 export default function Landing() {
   const stats = useChainStats();
+  const cert = useLatestCert(stats.issued);
   useReveal();
   const [scrolled, setScrolled] = useState(false);
 
@@ -134,6 +186,9 @@ export default function Landing() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const issued = useCountUp(stats.issued, stats.ready);
+  const rate = useCountUp(stats.rate, stats.ready);
+  const seasonsN = useCountUp(stats.seasons, stats.ready);
   const seasonStr = stats.ready ? `S${stats.season}` : "—";
 
   return (
@@ -193,11 +248,11 @@ export default function Landing() {
 
           <div className="lstrip">
             <div>
-              <div className="n mono">{stats.issued}</div>
+              <div className="n mono">{issued}</div>
               <div className="l">Credentials issued</div>
             </div>
             <div>
-              <div className="n mono">{stats.rate}%</div>
+              <div className="n mono">{rate}%</div>
               <div className="l">Pass-rate · {stats.verdicts} verdicts</div>
             </div>
             <div>
@@ -207,53 +262,76 @@ export default function Landing() {
               <div className="l">Current season</div>
             </div>
             <div>
-              <div className="n mono">{stats.seasons}×</div>
+              <div className="n mono">{seasonsN}×</div>
               <div className="l">Seasons self-advanced</div>
             </div>
           </div>
         </div>
       </section>
 
+      {/* TRUST BAR */}
+      <div className="trustbar">
+        <div className="trustbar-in">
+          <span>Built on <b>Somnia</b></span>
+          <span>On-chain LLM <b>in validator consensus</b></span>
+          <span><b>ERC-5192</b> soulbound</span>
+          <span>No off-chain oracle, <b>no human in the loop</b></span>
+        </div>
+      </div>
+
       {/* MOAT */}
       <section className="lsec" id="moat">
         <div className="lwrap">
           <div className="lsec-head reveal">
             <span className="kicker">Why this needs a blockchain</span>
-            <h2>Two things no one can tamper with.</h2>
+            <h2>Everyone else moved the trust. We removed it.</h2>
             <p>
-              Other on-chain AI just rubber-stamps a model that ran on someone's private server — trust
-              only moves to whoever held the keys. Verdictum removes the someone.
+              “On-chain AI” usually means a model that ran on someone's private server, with the chain just
+              rubber-stamping the result. The trust didn't disappear — it hopped to whoever ran the model.
             </p>
           </div>
-          <div className="moat-grid">
-            <div className="moat-card reveal">
-              <div className="moat-ico">⚖</div>
-              <h3>The judge can't be bribed.</h3>
+          <div className="diptych">
+            <div className="dip dip-other reveal">
+              <div className="dlabel">Everywhere else</div>
+              <h3>The AI runs off-chain.</h3>
               <p>
-                The examiner is a Qwen3 model executed <em>inside</em> a Somnia validator subcommittee, at
-                temperature 0, by majority consensus. The verdict isn't reported to the chain by an
-                oracle — reaching the verdict <em>is</em> the transaction. There is no off-chain server to
-                lean on, and no single party to pay off.
+                A server, an oracle, or a company computes the verdict and posts it. You're not trusting the
+                chain — you're trusting whoever held the keys, and hoping they didn't tilt the model. The
+                bribe just has a new address.
               </p>
-              <div className="underline">No oracle. No private server. No one to bribe.</div>
             </div>
-            <div className="moat-card reveal">
-              <div className="moat-ico">🔒</div>
-              <h3>The credential can't be faked.</h3>
+            <div className="dip dip-somnia reveal">
+              <div className="dlabel">On Somnia</div>
+              <h3>The judge runs inside consensus.</h3>
               <p>
-                A pass mints an ERC-5192 soulbound token that renders its own certificate — SVG and
-                metadata, entirely on-chain. It can never be transferred and never burned. There is no
-                issuer database to breach, no PDF to forge, no “verify” button that phones home to a
-                company that might not exist next year.
+                A subcommittee of validators runs the examiner — Qwen3, temperature 0 — and agrees on one
+                verdict by majority. The result isn't reported to the chain; reaching it <em>is</em> the
+                transaction. There's no one left to bribe.
               </p>
-              <div className="underline">Irrevocable. Self-rendering. Provably yours.</div>
+            </div>
+          </div>
+
+          <div className="credband reveal">
+            <div className="moat-ico">🔒</div>
+            <div>
+              <h3>And the proof can't be faked, either.</h3>
+              <p>
+                A pass mints an ERC-5192 soulbound token that renders its own certificate — SVG and metadata,
+                entirely on-chain. It can never be transferred and never burned. No issuer database to breach,
+                no PDF to forge, no “verify” button that phones home to a company that might not exist next
+                year. Irrevocable, self-rendering, and provably yours.
+              </p>
             </div>
           </div>
         </div>
       </section>
 
       {/* HOW IT WORKS */}
-      <section className="lsec" id="how" style={{ background: "rgba(16,20,28,0.4)", borderTop: "1px solid var(--hairline)", borderBottom: "1px solid var(--hairline)" }}>
+      <section
+        className="lsec"
+        id="how"
+        style={{ background: "rgba(16,20,28,0.4)", borderTop: "1px solid var(--hairline)", borderBottom: "1px solid var(--hairline)" }}
+      >
         <div className="lwrap">
           <div className="lsec-head reveal">
             <span className="kicker">How it works</span>
@@ -328,19 +406,51 @@ export default function Landing() {
             <div className="muted" style={{ fontSize: 13 }}>
               chosen by the AI, no human
             </div>
-            <div
-              className="pill"
-              style={{ marginTop: 16, borderColor: "var(--hairline)" }}
-              title="this season's gate"
-            >
+            <div className="pill" style={{ marginTop: 16, borderColor: "var(--hairline)" }} title="this season's gate">
               <span className="dot on" /> gate {stats.strictness}/100 · set autonomously
             </div>
           </div>
         </div>
       </section>
 
+      {/* THE CREDENTIAL */}
+      <section
+        className="lsec"
+        style={{ background: "rgba(16,20,28,0.4)", borderTop: "1px solid var(--hairline)", borderBottom: "1px solid var(--hairline)" }}
+      >
+        <div className="lwrap credspot">
+          <div className="reveal">
+            {cert ? (
+              <div className="cred">
+                <div className="cred-inner">
+                  <img src={cert} alt="On-chain self-rendering credential" />
+                </div>
+              </div>
+            ) : (
+              <div className="credframe-empty">
+                Your certificate renders itself, entirely on-chain.
+                <br />
+                Win one to mint the first.
+              </div>
+            )}
+          </div>
+          <div className="reveal">
+            <span className="kicker">The reward</span>
+            <h2 style={{ fontFamily: "Fraunces", fontWeight: 600, fontSize: "clamp(26px,3.6vw,38px)", margin: "12px 0 0", lineHeight: 1.1 }}>
+              A certificate no one can sell, fake, or take back.
+            </h2>
+            <ul>
+              <li>Self-rendering on-chain SVG — the image above is drawn by the contract, not hosted anywhere.</li>
+              <li>ERC-5192 soulbound — non-transferable, and burn-blocked, so it's permanent and bound to you.</li>
+              <li>Stamped with the season and focus it was won under — context that can never be edited.</li>
+              <li>Verifiable by anyone, forever, with nothing but the chain.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
       {/* CHALLENGES */}
-      <section className="lsec" style={{ background: "rgba(16,20,28,0.4)", borderTop: "1px solid var(--hairline)", borderBottom: "1px solid var(--hairline)" }}>
+      <section className="lsec">
         <div className="lwrap">
           <div className="lsec-head reveal">
             <span className="kicker">The challenges</span>
@@ -363,7 +473,11 @@ export default function Landing() {
       </section>
 
       {/* LIVE DOCKET */}
-      <section className="lsec" id="docket">
+      <section
+        className="lsec"
+        id="docket"
+        style={{ background: "rgba(16,20,28,0.4)", borderTop: "1px solid var(--hairline)", borderBottom: "1px solid var(--hairline)" }}
+      >
         <div className="lwrap">
           <div className="lsec-head reveal">
             <span className="kicker">Live · on-chain</span>
@@ -377,7 +491,7 @@ export default function Landing() {
       </section>
 
       {/* FAQ */}
-      <section className="lsec" style={{ background: "rgba(16,20,28,0.4)", borderTop: "1px solid var(--hairline)", borderBottom: "1px solid var(--hairline)" }}>
+      <section className="lsec">
         <div className="lwrap">
           <div className="lsec-head reveal">
             <span className="kicker">FAQ</span>
@@ -393,11 +507,18 @@ export default function Landing() {
               </p>
             </details>
             <details>
+              <summary>Isn't this just AI off-chain with extra steps?</summary>
+              <p>
+                That's exactly the thing it isn't. Off-chain AI means trusting whoever ran the model.
+                Here the validators recompute and agree on the verdict, so there's no single party who can
+                quietly tilt the result — and if consensus can't be reached, it fails safe.
+              </p>
+            </details>
+            <details>
               <summary>What does it cost me?</summary>
               <p>
                 Reading the Docket and verifying a credential is free. Submitting a statement costs a small
-                inference deposit in testnet STT plus gas. The “Defend Yourself From Mom” court is free to
-                try.
+                inference deposit in testnet STT plus gas. The “Defend Yourself From Mom” court is free to try.
               </p>
             </details>
             <details>
@@ -412,8 +533,8 @@ export default function Landing() {
               <summary>What stops someone from prompt-injecting the judge?</summary>
               <p>
                 Every statement is byte-validated, wrapped in unforgeable delimiters, and sandwiched between
-                fixed rules the submitter can't see or escape — re-asserted after the input. We ran a
-                jailbreak gauntlet against it and closed every leak we found.
+                fixed rules the submitter can't see or escape — re-asserted after the input. We ran a jailbreak
+                gauntlet against it and closed every leak we found.
               </p>
             </details>
             <details>
@@ -433,11 +554,8 @@ export default function Landing() {
           <div className="lcta-band reveal">
             <div className="aurora" style={{ height: "100%", inset: 0, opacity: 0.6 }} />
             <div style={{ position: "relative", zIndex: 1 }}>
-              <h2 className="serif">Make your case.</h2>
-              <p>
-                Step into the court, write your statement, and let the chain decide. A pass is yours
-                forever.
-              </p>
+              <h2 className="serif">Make your case. Let the chain decide.</h2>
+              <p>Step into the court, write your statement, and argue your worth to a judge that answers to no one. A pass is yours forever.</p>
               <Link to="/app" className="btn btn-gold btn-lg">
                 Launch the Court →
               </Link>
