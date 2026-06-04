@@ -17,23 +17,26 @@ contract CredentialTest is Test {
     }
 
     function test_MintAndMetadata() public {
-        uint256 id = cred.mint(alice, "SIDANG", 70);
+        uint256 id = cred.mint(alice, "SIDANG", 70, 3, "EVIDENCE");
         assertEq(cred.ownerOf(id), alice);
         assertTrue(cred.locked(id));
-        (string memory challenge,, uint8 strictness, address holder) = cred.credentialOf(id);
+        (string memory challenge,, uint8 strictness, address holder, uint32 season, string memory focus) =
+            cred.credentialOf(id);
         assertEq(challenge, "SIDANG");
         assertEq(strictness, 70);
         assertEq(holder, alice);
+        assertEq(season, 3);
+        assertEq(focus, "EVIDENCE");
     }
 
     function test_OnlyJudgeCanMint() public {
         vm.prank(bob); // not the judge
         vm.expectRevert(Credential.OnlyJudge.selector);
-        cred.mint(alice, "SIDANG", 50);
+        cred.mint(alice, "SIDANG", 50, 1, "OVERALL");
     }
 
     function test_SoulboundTransferReverts() public {
-        uint256 id = cred.mint(alice, "SIDANG", 50);
+        uint256 id = cred.mint(alice, "SIDANG", 50, 1, "OVERALL");
         vm.prank(alice);
         vm.expectRevert(Credential.Soulbound.selector);
         cred.transferFrom(alice, bob, id);
@@ -45,7 +48,7 @@ contract CredentialTest is Test {
 
     /// @dev The certificate is fully on-chain: tokenURI returns a base64 data-URI JSON (no server/IPFS).
     function test_TokenURIIsOnChainDataUri() public {
-        uint256 id = cred.mint(alice, "Job Application Screening", 72);
+        uint256 id = cred.mint(alice, "Job Application Screening", 72, 2, "ROLE_FIT");
         string memory uri = cred.tokenURI(id);
         // must be an on-chain data URI, not an http/ipfs pointer
         assertEq(_startsWith(uri, "data:application/json;base64,"), true);
@@ -72,7 +75,7 @@ contract CredentialTest is Test {
     /// (ERC721InvalidReceiver) — which, inside the platform callback, would lose the verdict.
     /// With _mint it must succeed, since a soulbound token can never leave the recipient.
     function test_MintToContractRecipientSucceeds() public {
-        uint256 id = cred.mint(address(this), "SIDANG", 60);
+        uint256 id = cred.mint(address(this), "SIDANG", 60, 1, "OVERALL");
         assertEq(cred.ownerOf(id), address(this));
         assertTrue(cred.locked(id));
     }

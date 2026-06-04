@@ -24,6 +24,8 @@ contract Credential is ERC721 {
         uint64 issuedAt; // block timestamp at issuance
         uint8 strictness; // strictness level in force when judged (0..100)
         address holder; // original (and only) holder
+        uint32 season; // exam season in force when judged
+        string focus; // season focus in force when judged (one of the Governor's curated tokens)
     }
 
     mapping(uint256 => Meta) public credentialOf;
@@ -39,7 +41,10 @@ contract Credential is ERC721 {
     }
 
     /// @notice Mint a soulbound credential. Callable only by the judge.
-    function mint(address to, string calldata challenge, uint8 strictness) external returns (uint256 id) {
+    function mint(address to, string calldata challenge, uint8 strictness, uint32 season, string calldata focus)
+        external
+        returns (uint256 id)
+    {
         if (msg.sender != JUDGE) revert OnlyJudge();
         id = ++nextId;
         // _mint (not _safeMint): a soulbound credential can never be transferred out, so the
@@ -48,7 +53,7 @@ contract Credential is ERC721 {
         // onERC721Received on a contract petitioner would kill the entire callback and lose the
         // verdict. _mint makes no external call, keeping the callback bulletproof.
         _mint(to, id);
-        credentialOf[id] = Meta(challenge, uint64(block.timestamp), strictness, to);
+        credentialOf[id] = Meta(challenge, uint64(block.timestamp), strictness, to, season, focus);
         emit Locked(id);
     }
 
@@ -82,6 +87,10 @@ contract Credential is ERC721 {
             Strings.toString(uint256(m.issuedAt)),
             '},{"trait_type":"Holder","value":"',
             Strings.toHexString(m.holder),
+            '"},{"trait_type":"Season","value":',
+            Strings.toString(uint256(m.season)),
+            '},{"trait_type":"Focus","value":"',
+            _esc(m.focus),
             '"},{"trait_type":"Soulbound","value":"true"}]}'
         );
 
@@ -108,15 +117,20 @@ contract Credential is ERC721 {
             '<text x="300" y="238" text-anchor="middle" font-family="Georgia,serif" font-size="23" fill="#34D399">',
             _esc(m.challenge),
             "</text>",
-            '<text x="300" y="288" text-anchor="middle" font-family="monospace" font-size="12" fill="#C8D2F0">Holder ',
+            '<text x="300" y="284" text-anchor="middle" font-family="monospace" font-size="12" fill="#C8D2F0">Holder ',
             holder,
             "</text>",
-            '<text x="300" y="310" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" fill="#94A0B8">Strictness ',
+            '<text x="300" y="305" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" fill="#94A0B8">Strictness ',
             Strings.toString(uint256(m.strictness)),
             "/100  -  Issued ",
             Strings.toString(uint256(m.issuedAt)),
             " UTC</text>",
-            '<text x="300" y="340" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" letter-spacing="1" fill="#E9C46A">SOULBOUND - ERC-5192 - NON-TRANSFERABLE - #',
+            '<text x="300" y="326" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" letter-spacing="1" fill="#E9C46A">SEASON ',
+            Strings.toString(uint256(m.season)),
+            "  -  FOCUS ",
+            _esc(m.focus),
+            "</text>",
+            '<text x="300" y="348" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" letter-spacing="1" fill="#94A0B8">SOULBOUND - ERC-5192 - NON-TRANSFERABLE - #',
             Strings.toString(tokenId),
             "</text></svg>"
         );
@@ -127,18 +141,22 @@ contract Credential is ERC721 {
     ///      keeps the function cheap; we still escape defensively against any future relaxed registry.
     function _esc(string memory s) internal pure returns (string memory) {
         bytes memory b = bytes(s);
-        bytes memory out = new bytes(b.length);
+        // two passes (no inline assembly): count kept bytes, then fill an exact-size buffer. View-only.
         uint256 n;
         for (uint256 i; i < b.length; i++) {
-            bytes1 ch = b[i];
-            // drop the bytes that would break the JSON/SVG data-URI: " < > & \ and any control char
-            if (ch == 0x22 || ch == 0x3c || ch == 0x3e || ch == 0x26 || ch == 0x5c || uint8(ch) < 0x20) continue;
-            out[n++] = ch;
+            if (_keep(b[i])) n++;
         }
-        assembly {
-            mstore(out, n)
-        } // shrink to actual length
+        bytes memory out = new bytes(n);
+        uint256 j;
+        for (uint256 i; i < b.length; i++) {
+            if (_keep(b[i])) out[j++] = b[i];
+        }
         return string(out);
+    }
+
+    /// @dev Keep a byte unless it would break the JSON/SVG data-URI: " < > & \ or any control char.
+    function _keep(bytes1 ch) private pure returns (bool) {
+        return !(ch == 0x22 || ch == 0x3c || ch == 0x3e || ch == 0x26 || ch == 0x5c || uint8(ch) < 0x20);
     }
 
     /// @dev Soulbound AND irrevocable: allow only mint (from==0). Every transfer and every burn
