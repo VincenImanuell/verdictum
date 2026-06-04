@@ -56,9 +56,6 @@ header.bar{position:sticky;top:0;z-index:30;backdrop-filter:blur(10px);
   color:var(--gold);font-family:Fraunces;font-weight:700;font-size:18px;background:radial-gradient(circle at 50% 30%,rgba(233,196,106,.12),transparent)}
 .word{font-family:Fraunces;font-weight:700;font-size:21px;letter-spacing:.04em;line-height:1}
 .tagline{font-size:11.5px;color:var(--muted);margin-top:1px}
-.langtog{display:inline-flex;border:1px solid var(--hairline);border-radius:999px;overflow:hidden;background:var(--raised)}
-.langtog button{border:0;background:transparent;color:var(--muted);font-weight:600;font-size:12px;padding:6px 12px;cursor:pointer}
-.langtog button.active{background:var(--slate);color:var(--ink)}
 
 /* hero */
 .hero{padding:34px 0 6px;text-align:center}
@@ -167,15 +164,12 @@ footer{border-top:1px solid var(--hairline);margin-top:34px;padding:24px 0 40px;
       <div class="seal">V</div>
       <div>
         <div class="word">VERDICTUM</div>
-        <div class="tagline" data-en="The verdict isn't advice — it's the transaction." data-id="Vonis ini bukan saran — ini transaksi.">The verdict isn't advice — it's the transaction.</div>
+        <div class="tagline" data-en="The verdict isn't advice — it's the transaction.">The verdict isn't advice — it's the transaction.</div>
       </div>
     </div>
     <div class="row">
-      <div class="langtog" id="langtog">
-        <button data-lang="en" class="active">EN</button><button data-lang="id">ID</button>
-      </div>
-      <span class="pill"><span class="dot" id="netdot"></span><span id="netlabel" data-en="not connected" data-id="tidak terhubung">not connected</span></span>
-      <button class="btn btn-primary" id="connect" data-en="Connect wallet" data-id="Hubungkan wallet">Connect wallet</button>
+      <span class="pill"><span class="dot" id="netdot"></span><span id="netlabel" data-en="not connected">not connected</span></span>
+      <button class="btn btn-primary" id="connect" data-en="Connect wallet">Connect wallet</button>
     </div>
   </div>
 </header>
@@ -183,19 +177,19 @@ footer{border-top:1px solid var(--hairline);margin-top:34px;padding:24px 0 40px;
 <div class="wrap">
 
   <section class="hero">
-    <h1 data-en='An AI judge that lives inside <span class="em">validator consensus</span>.' data-id='Hakim AI yang hidup di dalam <span class="em">konsensus validator</span>.'>An AI judge that lives inside <span class="em">validator consensus</span>.</h1>
-    <p data-en="A consensus-validated AI examiner and an unforgeable, soulbound credential for any high-stakes written argument. No server scored you. No company stamped your certificate. The chain did — and no one, not even us, can fake or revoke it." data-id="Examiner AI yang divalidasi konsensus dan kredensial soulbound yang tak bisa dipalsu untuk argumen tertulis bertaruhan tinggi apa pun. Tak ada server yang menilaimu. Tak ada perusahaan yang menstempel sertifikatmu. Chain yang menilai — dan tak seorang pun, termasuk kami, bisa memalsukan atau mencabutnya.">A consensus-validated AI examiner and an unforgeable, soulbound credential for any high-stakes written argument. No server scored you. No company stamped your certificate. The chain did — and no one, not even us, can fake or revoke it.</p>
+    <h1 data-en='An AI judge that lives inside <span class="em">validator consensus</span>.'>An AI judge that lives inside <span class="em">validator consensus</span>.</h1>
+    <p data-en="A consensus-validated AI examiner and an unforgeable, soulbound credential for any high-stakes written argument. No server scored you. No company stamped your certificate. The chain did — and no one, not even us, can fake or revoke it.">A consensus-validated AI examiner and an unforgeable, soulbound credential for any high-stakes written argument. No server scored you. No company stamped your certificate. The chain did — and no one, not even us, can fake or revoke it.</p>
     <div class="moat">
-      <span class="pill">⚖ <span data-en="Judged in consensus, not by an off-chain oracle" data-id="Dinilai dalam konsensus, bukan oracle off-chain">Judged in consensus, not by an off-chain oracle</span></span>
-      <span class="pill">🔒 <span data-en="Soulbound · ERC-5192" data-id="Soulbound · ERC-5192">Soulbound · ERC-5192</span></span>
-      <span class="pill">🤖 <span data-en="Autonomous strictness" data-id="Strictness otonom">Autonomous strictness</span></span>
+      <span class="pill">⚖ <span data-en="Judged in consensus, not by an off-chain oracle">Judged in consensus, not by an off-chain oracle</span></span>
+      <span class="pill">🔒 <span data-en="Soulbound · ERC-5192">Soulbound · ERC-5192</span></span>
+      <span class="pill">🤖 <span data-en="Autonomous strictness">Autonomous strictness</span></span>
     </div>
   </section>
 
   <!-- CHALLENGE PICKER -->
   <section class="section">
-    <h2 data-en="Choose your examination" data-id="Pilih ujianmu">Choose your examination</h2>
-    <p class="muted" data-en="One contract, many examiners. Job Application Screening is the flagship; the others share the same consensus-validated judge." data-id="Satu kontrak, banyak penguji. Job Application Screening adalah unggulan; yang lain memakai hakim ber-konsensus yang sama.">One contract, many examiners. Job Application Screening is the flagship; the others share the same consensus-validated judge.</p>
+    <h2 data-en="Choose your examination">Choose your examination</h2>
+    <p class="muted" data-en="One contract, many examiners. Job Application Screening is the flagship; the others share the same consensus-validated judge.">One contract, many examiners. Job Application Screening is the flagship; the others share the same consensus-validated judge.</p>
     <div class="tiles" id="tiles"></div>
   </section>
 
@@ -208,16 +202,16 @@ footer{border-top:1px solid var(--hairline);margin-top:34px;padding:24px 0 40px;
     <textarea id="statement" maxlength="2000" placeholder="…"></textarea>
     <div class="spread" style="margin-top:12px;flex-wrap:wrap;gap:10px">
       <div class="row" style="font-size:12.5px">
-        <span class="muted" data-en="Strictness in force" data-id="Strictness berlaku">Strictness in force</span>
+        <span class="muted" data-en="Strictness in force">Strictness in force</span>
         <span class="minibar"><i id="strictBar" style="width:50%"></i></span>
         <span class="mono" id="strictMirror">50</span><span class="muted">/100</span>
       </div>
       <div class="row">
         <span class="counter muted mono" id="counter">0 / 2000</span>
-        <button class="btn btn-primary" id="submitBtn" disabled data-en="Submit to the Court ⚖" data-id="Ajukan ke Sidang ⚖">Submit to the Court ⚖</button>
+        <button class="btn btn-primary" id="submitBtn" disabled data-en="Submit to the Court ⚖">Submit to the Court ⚖</button>
       </div>
     </div>
-    <div class="trust" data-en="Judged by an LLM running inside Somnia validator consensus (temperature 0, majority). No off-chain oracle. Costs ~0.24 STT (auto-rebated)." data-id="Dinilai oleh LLM di dalam konsensus validator Somnia (temperature 0, majority). Tanpa oracle off-chain. Biaya ~0.24 STT (sisa di-rebate).">Judged by an LLM running inside Somnia validator consensus (temperature 0, majority). No off-chain oracle. Costs ~0.24 STT (auto-rebated).</div>
+    <div class="trust" data-en="Judged by an LLM running inside Somnia validator consensus (temperature 0, majority). No off-chain oracle. Costs ~0.24 STT (auto-rebated).">Judged by an LLM running inside Somnia validator consensus (temperature 0, majority). No off-chain oracle. Costs ~0.24 STT (auto-rebated).</div>
 
     <!-- async + result mount -->
     <div id="awaiting" class="consensus hide">
@@ -233,8 +227,8 @@ footer{border-top:1px solid var(--hairline);margin-top:34px;padding:24px 0 40px;
   <section class="section card">
     <div class="spread" style="flex-wrap:wrap;gap:10px">
       <div>
-        <h2 style="margin:0" data-en="The Inspector — autonomy" data-id="Sang Inspektur — otonomi">The Inspector — autonomy</h2>
-        <p class="muted" style="margin:4px 0 0;max-width:440px;font-size:13px" data-en="No human sets the difficulty. Anyone can trigger a recalibration: an AI in consensus picks the new strictness from the pass-rate — the more candidates pass, the harsher it gets." data-id="Tak ada manusia yang mengatur kesulitan. Siapa pun bisa memicu rekalibrasi: AI dalam konsensus memilih strictness baru dari tingkat kelulusan — makin banyak yang lulus, makin ketat.">No human sets the difficulty. Anyone can trigger a recalibration: an AI in consensus picks the new strictness from the pass-rate — the more candidates pass, the harsher it gets.</p>
+        <h2 style="margin:0" data-en="The Inspector — autonomy">The Inspector — autonomy</h2>
+        <p class="muted" style="margin:4px 0 0;max-width:440px;font-size:13px" data-en="No human sets the difficulty. Anyone can trigger a recalibration: an AI in consensus picks the new strictness from the pass-rate — the more candidates pass, the harsher it gets.">No human sets the difficulty. Anyone can trigger a recalibration: an AI in consensus picks the new strictness from the pass-rate — the more candidates pass, the harsher it gets.</p>
       </div>
     </div>
     <div class="gaugewrap" style="margin-top:14px">
@@ -248,8 +242,8 @@ footer{border-top:1px solid var(--hairline);margin-top:34px;padding:24px 0 40px;
       </svg>
       <div>
         <div><span class="gval" id="gaugeVal">50</span><span class="muted">/100</span><span class="delta" id="gaugeDelta"></span></div>
-        <div class="zone"><span data-en="lenient · balanced · severe" data-id="lunak · seimbang · ketat">lenient · balanced · severe</span> · <span class="mono"><span id="tickCount">0</span>× <span data-en="recalibrated" data-id="rekalibrasi">recalibrated</span></span></div>
-        <button class="btn" id="tickBtn" style="margin-top:12px" data-en="Trigger recalibration (tick) 🔁" data-id="Picu rekalibrasi (tick) 🔁">Trigger recalibration (tick) 🔁</button>
+        <div class="zone"><span data-en="lenient · balanced · severe">lenient · balanced · severe</span> · <span class="mono"><span id="tickCount">0</span>× <span data-en="recalibrated">recalibrated</span></span></div>
+        <button class="btn" id="tickBtn" style="margin-top:12px" data-en="Trigger recalibration (tick) 🔁">Trigger recalibration (tick) 🔁</button>
       </div>
     </div>
     <div id="tickAwait" class="consensus hide"><div class="ring"><div class="core"></div><div class="node p1"></div><div class="node p2"></div><div class="node p3"></div></div><div class="steps" id="tickSteps"></div><div class="hairsweep"></div></div>
@@ -257,11 +251,11 @@ footer{border-top:1px solid var(--hairline);margin-top:34px;padding:24px 0 40px;
 
   <!-- VERIFY -->
   <section class="section card">
-    <h2 data-en="Verify a credential — public, no wallet" data-id="Verifikasi kredensial — publik, tanpa wallet">Verify a credential — public, no wallet</h2>
-    <p class="muted" style="font-size:13px;margin:4px 0 12px" data-en="An on-chain fact: unforgeable and irrevocable by anyone, including the platform's own creators. Read straight from the chain." data-id="Fakta on-chain: tak bisa dipalsu atau dicabut siapa pun, termasuk pembuat platform. Dibaca langsung dari chain.">An on-chain fact: unforgeable and irrevocable by anyone, including the platform's own creators. Read straight from the chain.</p>
+    <h2 data-en="Verify a credential — public, no wallet">Verify a credential — public, no wallet</h2>
+    <p class="muted" style="font-size:13px;margin:4px 0 12px" data-en="An on-chain fact: unforgeable and irrevocable by anyone, including the platform's own creators. Read straight from the chain.">An on-chain fact: unforgeable and irrevocable by anyone, including the platform's own creators. Read straight from the chain.</p>
     <div class="row">
       <input class="input mono" id="verifyId" placeholder="token id" value="1" />
-      <button class="btn btn-primary" id="verifyBtn" data-en="Verify" data-id="Verifikasi">Verify</button>
+      <button class="btn btn-primary" id="verifyBtn" data-en="Verify">Verify</button>
     </div>
     <div id="verifyResult"></div>
   </section>
@@ -269,9 +263,9 @@ footer{border-top:1px solid var(--hairline);margin-top:34px;padding:24px 0 40px;
   <footer>
     <div class="spread" style="flex-wrap:wrap;gap:10px">
       <div>
-        <strong class="serif">VERDICTUM</strong> · <span data-en="built for the Somnia Agentathon" data-id="dibangun untuk Somnia Agentathon">built for the Somnia Agentathon</span>
+        <strong class="serif">VERDICTUM</strong> · <span data-en="built for the Somnia Agentathon">built for the Somnia Agentathon</span>
         <div class="addrgrid mono" id="addrGrid"></div>
-        <div class="faint" data-en="Somnia Shannon testnet · chain 50312 · run locally: cd web && python3 -m http.server 8000" data-id="Somnia Shannon testnet · chain 50312 · jalankan lokal: cd web && python3 -m http.server 8000">Somnia Shannon testnet · chain 50312 · run locally: cd web && python3 -m http.server 8000</div>
+        <div class="faint" data-en="Somnia Shannon testnet · chain 50312 · run locally: cd web && python3 -m http.server 8000">Somnia Shannon testnet · chain 50312 · run locally: cd web && python3 -m http.server 8000</div>
       </div>
     </div>
   </footer>
@@ -279,9 +273,9 @@ footer{border-top:1px solid var(--hairline);margin-top:34px;padding:24px 0 40px;
 
 <script>
 const A = {
-  judge: "0x8eab3B290DFc329d0f4EFe59E5C8E5adbfE617C8",
-  cred:  "0x97f27ea3c86D70e20C6a390385E9E5dCcc200AE8",
-  insp:  "0xBca5618226fF717C7C1Cc339376A980acF593cF9",
+  judge: "0x16CBe69E9890eaC1E483f434eBa7Dc514703Db6a",
+  cred:  "0x93F333e11c771AeAD2E6f2e4F8Ff1E73C544c963",
+  insp:  "0xCd98B29737F2aC9C04225504b68D630Cd83A3Dc1",
   platform:"0x037Bb9C718F3f7fe5eCBDB0b600D607b52706776",
 };
 const RPC = "https://dream-rpc.somnia.network";
@@ -293,23 +287,17 @@ const CHALLENGES = [
     id:"0xfe8076e403d326e10828e1f4b8c02c3977d2dcb85c2acb527c7c3df3a01c9fdd",
     label:"Job Application Screening",
     en:{title:"Job Application Screening", sub:"Write your “why this role” — face the recruiter that can't be charmed.",
-        ph:"Paste your cover letter or “why this role / why this company” answer. Be specific: name real projects, metrics, and outcomes…"},
-    idl:{title:"Screening Lamaran Kerja", sub:"Tulis “kenapa peran ini” — hadapi recruiter yang tak bisa dirayu.",
-        ph:"Tempel cover letter atau jawaban “kenapa peran/perusahaan ini”. Spesifik: sebut proyek nyata, metrik, dan hasil…"} },
-  { key:"thesis", ico:"🎓",
-    id:"0x9b1d0259263e7dcb2009d85fcdd5710c935ed8f56728b8a28d2ec240476e68c2",
-    label:"SIDANG - Thesis Defense",
-    en:{title:"SIDANG — Thesis Defense", sub:"Defend your thesis title + abstract before an AI examiner.",
-        ph:"Submit your thesis TITLE and ABSTRACT: research question, method, sample, the literature gap, and your contribution…"},
-    idl:{title:"SIDANG — Sidang Skripsi", sub:"Pertahankan judul + abstrak skripsimu di hadapan penguji AI.",
-        ph:"Kirim JUDUL dan ABSTRAK skripsi: pertanyaan penelitian, metode, sampel, gap literatur, dan kontribusimu…"} },
+        ph:"Paste your cover letter or “why this role / why this company” answer. Be specific: name real projects, metrics, and outcomes…"} },
+  { key:"sop", ico:"🎓",
+    id:"0x9dc0e540bcb66feb716386610198c9bcffde0149a850ef674002c6e9e67df35d",
+    label:"Statement of Purpose",
+    en:{title:"Statement of Purpose", sub:"Your admissions essay, screened by the committee that can't be charmed.",
+        ph:"Paste your statement of purpose / personal statement: your goal, concrete evidence (projects, results), and genuine fit with the program…"} },
   { key:"mom", ico:"🔥", free:true,
     id:"0xb0e078d425b932d86768fbae797f20fc71289b343659bc2ba92b663663d475da",
     label:"Defend Yourself From Mom",
     en:{title:"Defend Yourself From Mom", sub:"Plead your most ridiculous case. Mom is not amused easily.",
-        ph:"Make your excuse. Be honest, take responsibility, and bring a believable plan (a little charm helps)…"},
-    idl:{title:"Bela Diri dari Dimarahi Ibu", sub:"Bela perkaramu yang paling konyol. Ibu tak mudah luluh.",
-        ph:"Sampaikan alasanmu. Jujur, bertanggung jawab, dan bawa rencana yang masuk akal (sedikit pesona membantu)…"} },
+        ph:"Make your excuse. Be honest, take responsibility, and bring a believable plan (a little charm helps)…"} },
 ];
 
 const J_ABI = [
@@ -332,7 +320,8 @@ const I_ABI = [
 ];
 const P_ABI = ["function getRequestDeposit() view returns (uint256)"];
 
-let lang = "en", account=null, signer=null, selected=CHALLENGES[0];
+const lang = "en";
+let account=null, signer=null, selected=CHALLENGES[0];
 const read = new ethers.JsonRpcProvider(RPC, CHAIN_ID);
 const judgeR = new ethers.Contract(A.judge, J_ABI, read);
 const credR  = new ethers.Contract(A.cred,  C_ABI, read);
@@ -345,19 +334,17 @@ const sleep = ms => new Promise(r=>setTimeout(r,ms));
 function applyLang(){
   document.documentElement.lang = lang;
   document.querySelectorAll("[data-en]").forEach(el=>{
-    const v = lang==="en" ? el.getAttribute("data-en") : el.getAttribute("data-id");
+    const v = el.getAttribute("data-en");
     if(v!=null){ if(v.includes("<")) el.innerHTML=v; else el.textContent=v; }
   });
-  document.querySelectorAll("#langtog button").forEach(b=>b.classList.toggle("active", b.dataset.lang===lang));
   renderTiles(); applySkinCopy();
 }
-$("#langtog").addEventListener("click",e=>{ const b=e.target.closest("button"); if(!b)return; lang=b.dataset.lang; applyLang(); });
 
 // ---------- challenge tiles ----------
 function renderTiles(){
   const t = $("#tiles"); t.innerHTML="";
   CHALLENGES.forEach(c=>{
-    const L = lang==="en"?c.en:c.idl;
+    const L = c.en;
     const div = document.createElement("div");
     div.className = "tile"+(c.featured?" featured":"")+(c.key===selected.key?" sel":"");
     div.innerHTML = `<div class="top-accent"></div>
@@ -369,8 +356,8 @@ function renderTiles(){
   });
 }
 function applySkinCopy(){
-  const L = lang==="en"?selected.en:selected.idl;
-  $("#submitTitle").textContent = lang==="en" ? "Make your case" : "Ajukan pembelaanmu";
+  const L = selected.en;
+  $("#submitTitle").textContent = "Make your case";
   $("#submitSkin").textContent = L.title;
   $("#statement").placeholder = L.ph;
 }
@@ -425,17 +412,15 @@ stmt.addEventListener("input",()=>{
 });
 function resetResult(){ $("#verdictMount").className="hide"; $("#credMount").className="hide"; $("#awaiting").className="consensus hide"; }
 
-const VWORD = { 1:{en:"PASS",id:"LULUS",cls:"pass",note_en:"Advanced. Specific, evidenced, and convincing.",note_id:"Diloloskan. Spesifik, berbukti, dan meyakinkan."},
-                2:{en:"REVISE",id:"REVISI",cls:"revise",note_en:"Promising, but tighten the specifics and evidence.",note_id:"Menjanjikan, tapi pertajam spesifik dan bukti."},
-                3:{en:"FAIL",id:"TIDAK LULUS",cls:"fail",note_en:"Not advanceable — generic, unsupported, or a manipulation attempt.",note_id:"Tidak diloloskan — generik, tanpa bukti, atau upaya manipulasi."},
-                0:{en:"NO CONSENSUS",id:"TANPA KONSENSUS",cls:"revise",note_en:"Validators did not reach consensus — try again.",note_id:"Validator tidak mencapai konsensus — coba lagi."} };
+const VWORD = { 1:{en:"PASS",cls:"pass",note_en:"Advanced. Specific, evidenced, and convincing."},
+                2:{en:"REVISE",cls:"revise",note_en:"Promising, but tighten the specifics and evidence."},
+                3:{en:"FAIL",cls:"fail",note_en:"Not advanceable — generic, unsupported, or a manipulation attempt."},
+                0:{en:"NO CONSENSUS",cls:"revise",note_en:"Validators did not reach consensus — try again."} };
 
 async function doSubmit(){
   if(!signer) return connect();
   resetResult();
-  const steps = lang==="en"
-    ? ["Submitting transaction… confirm in your wallet","In the mempool, awaiting a block","Awaiting validator consensus…"]
-    : ["Mengirim transaksi… konfirmasi di wallet","Di mempool, menunggu block","Menunggu konsensus validator…"];
+  const steps = ["Submitting transaction… confirm in your wallet","In the mempool, awaiting a block","Awaiting validator consensus…"];
   const stepEl = $("#steps"); $("#awaiting").className="consensus";
   stepEl.textContent = steps[0];
   $("#submitBtn").disabled = true;
@@ -452,11 +437,11 @@ async function doSubmit(){
       ` · <a target="_blank" href="${EXPLORER}/tx/${rcpt.hash}">tx ↗</a>`;
     const res = await waitVerdict(requestId, rcpt.blockNumber);
     $("#awaiting").className="consensus hide";
-    if(!res){ stepEl.textContent = lang==="en"?"Timed out — please try again.":"Waktu habis — coba lagi."; }
+    if(!res){ stepEl.textContent = "Timed out — please try again."; }
     else { showVerdict(res.verdict); if(Number(res.verdict)===1 && res.tokenId>0n) await showCredential(res.tokenId); refreshState(); }
   }catch(err){
     $("#awaiting").className="consensus hide";
-    alert((lang==="en"?"Submit failed: ":"Gagal mengirim: ")+(err.shortMessage||err.message||err));
+    alert("Submit failed: "+(err.shortMessage||err.message||err));
   }finally{ $("#submitBtn").disabled=false; }
 }
 $("#submitBtn").onclick = doSubmit;
@@ -473,12 +458,10 @@ async function waitVerdict(requestId, fromBlock){
 
 function showVerdict(v){
   const m = VWORD[Number(v)]||VWORD[0];
-  const second = lang==="en" ? m.id : m.en;
   const mount = $("#verdictMount"); mount.className="";
   mount.innerHTML = `<div class="verdict ${m.cls} stamp">
-    <div class="eyebrow">${second}</div>
-    <div class="word">${lang==="en"?m.en:m.id}</div>
-    <div class="note">${lang==="en"?m.note_en:m.note_id}</div>
+    <div class="word">${m.en}</div>
+    <div class="note">${m.note_en}</div>
   </div>`;
 }
 
@@ -489,18 +472,18 @@ async function showCredential(tokenId){
     const issued = new Date(Number(meta.issuedAt)*1000).toISOString().replace("T"," ").slice(0,16)+" UTC";
     const mount = $("#credMount"); mount.className="";
     mount.innerHTML = `<div class="cred"><div class="cred-inner">
-      <div class="eyebrow" style="color:var(--gold);margin-bottom:10px">${lang==="en"?"Soulbound credential minted":"Kredensial soulbound ter-mint"}</div>
+      <div class="eyebrow" style="color:var(--gold);margin-bottom:10px">Soulbound credential minted</div>
       <img src="${json.image}" alt="Verdictum certificate"/>
       <div class="kv">
-        <div class="k">${lang==="en"?"Token":"Token"}</div><div class="v mono">#${tokenId}</div>
-        <div class="k">${lang==="en"?"Challenge":"Tantangan"}</div><div class="v">${meta.challenge}</div>
-        <div class="k">${lang==="en"?"Strictness at issuance":"Strictness saat terbit"}</div><div class="v mono">${meta.strictness}/100</div>
-        <div class="k">${lang==="en"?"Holder":"Pemegang"}</div><div class="v mono">${meta.holder.slice(0,6)}…${meta.holder.slice(-4)}</div>
-        <div class="k">${lang==="en"?"Issued":"Terbit"}</div><div class="v mono">${issued}</div>
+        <div class="k">Token</div><div class="v mono">#${tokenId}</div>
+        <div class="k">Challenge</div><div class="v">${meta.challenge}</div>
+        <div class="k">Strictness at issuance</div><div class="v mono">${meta.strictness}/100</div>
+        <div class="k">Holder</div><div class="v mono">${meta.holder.slice(0,6)}…${meta.holder.slice(-4)}</div>
+        <div class="k">Issued</div><div class="v mono">${issued}</div>
       </div>
       <div class="spread" style="margin-top:12px">
-        <span class="lock">🔒 ${lang==="en"?"Soulbound · ERC-5192 · non-transferable":"Soulbound · ERC-5192 · tak bisa dipindah"}</span>
-        <a target="_blank" href="${EXPLORER}/token/${A.cred}/instance/${tokenId}">${lang==="en"?"View on explorer ↗":"Lihat di explorer ↗"}</a>
+        <span class="lock">🔒 Soulbound · ERC-5192 · non-transferable</span>
+        <a target="_blank" href="${EXPLORER}/token/${A.cred}/instance/${tokenId}">View on explorer ↗</a>
       </div>
     </div></div>`;
   }catch(e){ console.warn(e); }
@@ -513,18 +496,18 @@ $("#tickBtn").onclick = async ()=>{
   const before = Number(await inspR.tickCount());
   const prevS = Number(await judgeR.currentStrictness());
   $("#tickAwait").className="consensus";
-  $("#tickSteps").textContent = lang==="en"?"Recalibrating… confirm, then await consensus":"Rekalibrasi… konfirmasi, lalu tunggu konsensus";
+  $("#tickSteps").textContent = "Recalibrating… confirm, then await consensus";
   try{
     const insp = new ethers.Contract(A.insp, I_ABI, signer);
     const deposit = (await platR.getRequestDeposit()) + ethers.parseEther("0.21");
     const tx = await insp.tick({value:deposit}); const rc = await tx.wait();
-    $("#tickSteps").innerHTML = (lang==="en"?"Awaiting validator consensus…":"Menunggu konsensus validator…")+` · <a target="_blank" href="${EXPLORER}/tx/${rc.hash}">tx ↗</a>`;
+    $("#tickSteps").innerHTML = "Awaiting validator consensus…"+` · <a target="_blank" href="${EXPLORER}/tx/${rc.hash}">tx ↗</a>`;
     let after=before, news=prevS;
     for(let i=0;i<60;i++){ await sleep(4000); after=Number(await inspR.tickCount());
       if(after>before){ news=Number(await inspR.strictness()); break; } }
     $("#tickAwait").className="consensus hide";
     if(after>before){ const d=news-prevS; paintGauge(news, `${prevS} → ${news}${d>0?" · the world tightened":""}`); $("#tickCount").textContent=String(after); }
-    else { $("#tickSteps").textContent = lang==="en"?"Timed out — try again.":"Waktu habis — coba lagi."; }
+    else { $("#tickSteps").textContent = "Timed out — try again."; }
   }catch(e){ $("#tickAwait").className="consensus hide"; alert((e.shortMessage||e.message)); }
   finally{ btn.disabled=false; }
 };
@@ -532,23 +515,23 @@ $("#tickBtn").onclick = async ()=>{
 // ---------- verify ----------
 $("#verifyBtn").onclick = async ()=>{
   const id = $("#verifyId").value.trim(); const out=$("#verifyResult");
-  out.innerHTML = `<div class="receipt muted">${lang==="en"?"Reading the chain…":"Membaca chain…"}</div>`;
+  out.innerHTML = `<div class="receipt muted">Reading the chain…</div>`;
   try{
     const [meta, locked, uri] = await Promise.all([credR.credentialOf(id), credR.locked(id), credR.tokenURI(id)]);
     const json = JSON.parse(atob(uri.split(",")[1]));
     const issued = new Date(Number(meta.issuedAt)*1000).toISOString().replace("T"," ").slice(0,16)+" UTC";
     out.innerHTML = `<div class="receipt">
-      <div class="valid ok">✓ ${lang==="en"?"VALID — on-chain credential":"VALID — kredensial on-chain"}</div>
+      <div class="valid ok">✓ VALID — on-chain credential</div>
       <img src="${json.image}" style="width:100%;border-radius:10px;margin:12px 0;border:1px solid var(--hairline)"/>
       <div class="kv">
-        <div class="k">${lang==="en"?"Challenge":"Tantangan"}</div><div class="v">${meta.challenge}</div>
-        <div class="k">${lang==="en"?"Strictness":"Strictness"}</div><div class="v mono">${meta.strictness}/100</div>
-        <div class="k">${lang==="en"?"Issued":"Terbit"}</div><div class="v mono">${issued}</div>
-        <div class="k">${lang==="en"?"Holder":"Pemegang"}</div><div class="v mono"><a target="_blank" href="${EXPLORER}/address/${meta.holder}">${meta.holder.slice(0,8)}…${meta.holder.slice(-6)}</a></div>
-        <div class="k">${lang==="en"?"Soulbound":"Soulbound"}</div><div class="v">${locked?"yes 🔒":"no"}</div>
+        <div class="k">Challenge</div><div class="v">${meta.challenge}</div>
+        <div class="k">Strictness</div><div class="v mono">${meta.strictness}/100</div>
+        <div class="k">Issued</div><div class="v mono">${issued}</div>
+        <div class="k">Holder</div><div class="v mono"><a target="_blank" href="${EXPLORER}/address/${meta.holder}">${meta.holder.slice(0,8)}…${meta.holder.slice(-6)}</a></div>
+        <div class="k">Soulbound</div><div class="v">${locked?"yes 🔒":"no"}</div>
       </div></div>`;
   }catch(e){
-    out.innerHTML = `<div class="receipt"><div class="valid no">✗ ${lang==="en"?"Not found — no credential with that id":"Tidak ditemukan — tak ada kredensial dengan id itu"}</div></div>`;
+    out.innerHTML = `<div class="receipt"><div class="valid no">✗ Not found — no credential with that id</div></div>`;
   }
 };
 
