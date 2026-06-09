@@ -476,7 +476,7 @@ export default function Landing() {
           <div className="lchal">
             {CHALLENGES.map((c) => (
               <div className={`tile reveal${c.featured ? " sel" : ""}`} key={c.key}>
-                <div className="ico">{c.icon}</div>
+                <div className="ico">{c.iconKey ? <Icon name={c.iconKey} size={30} /> : c.icon}</div>
                 <h3 style={{ marginTop: 12 }}>
                   {c.title}
                   {c.free && <span className="freetag">FREE</span>}
