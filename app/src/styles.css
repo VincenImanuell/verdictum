@@ -879,6 +879,8 @@ footer {
 /* Ambient floating keyword chips — drift behind the hero headline (z-index 0 < content). */
 .fw {
   --rot: 0deg;
+  --fx: 0; /* entrance start offset toward viewport center (set per chip) */
+  --fy: 0;
   position: absolute;
   z-index: 0;
   pointer-events: none;
@@ -897,7 +899,9 @@ footer {
   backdrop-filter: blur(4px);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.04);
   white-space: nowrap;
-  animation: floatword 7.5s ease-in-out infinite alternate;
+  /* on load each chip flies out from the page center & fades in (fwEnter),
+     then hands off seamlessly to the idle drift (floatword) — set per chip below */
+  transition: top 0.3s ease; /* glide instead of snap if the hero ever reflows */
 }
 /* the two punchy pillars glow gold */
 .fw-1,
@@ -907,31 +911,51 @@ footer {
 }
 .fw-1 {
   left: 4.5%;
-  top: 28%;
+  top: 16%;
   --rot: -7deg;
-  animation-duration: 7s;
-  animation-delay: 0s;
+  --fx: 42vw;
+  --fy: 32vh;
+  animation: fwEnter 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) 0.1s both,
+    floatword 7s ease-in-out 1s infinite alternate;
 }
 .fw-2 {
   left: 7.5%;
-  top: 61%;
+  top: 46%;
   --rot: 5deg;
-  animation-duration: 8.6s;
-  animation-delay: 1.1s;
+  --fx: 40vw;
+  --fy: 4vh;
+  animation: fwEnter 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) 0.35s both,
+    floatword 8.6s ease-in-out 1.25s infinite alternate;
 }
 .fw-3 {
   right: 5.5%;
-  top: 36%;
+  top: 23%;
   --rot: 6deg;
-  animation-duration: 7.8s;
-  animation-delay: 0.6s;
+  --fx: -42vw;
+  --fy: 26vh;
+  animation: fwEnter 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) 0.2s both,
+    floatword 7.8s ease-in-out 1.1s infinite alternate;
 }
 .fw-4 {
   right: 6.5%;
-  top: 67%;
+  top: 52%;
   --rot: -5deg;
-  animation-duration: 9.1s;
-  animation-delay: 1.7s;
+  --fx: -40vw;
+  --fy: -2vh;
+  animation: fwEnter 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) 0.45s both,
+    floatword 9.1s ease-in-out 1.35s infinite alternate;
+}
+/* entrance: from the page center, transparent & small → out to its spot, opaque.
+   ends exactly where floatword starts (translateY(7px) rotate(--rot)) for a seamless handoff. */
+@keyframes fwEnter {
+  from {
+    opacity: 0;
+    transform: translate(var(--fx), var(--fy)) scale(0.45) rotate(var(--rot));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(7px) rotate(var(--rot));
+  }
 }
 @keyframes floatword {
   from {
@@ -945,6 +969,13 @@ footer {
 @media (max-width: 1080px) {
   .fw {
     display: none;
+  }
+}
+/* On desktop (where the chips show), reserve the headline's full height up front
+   so the typewriter doesn't reflow the hero line-by-line and jolt the chips. */
+@media (min-width: 1081px) {
+  .lhero h1 {
+    min-height: 4.4em; /* ~4 wrapped lines at line-height 1.1 */
   }
 }
 .lbadge {
