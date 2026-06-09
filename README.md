@@ -6,7 +6,7 @@ No server scored you. No company stamped your certificate. The chain did — and
 
 Verdictum is a **consensus-validated AI examiner** plus an **unforgeable, soulbound credential** for any high-stakes *written* argument. You submit free text; an on-chain LLM running *inside Somnia's validator consensus* returns a verdict (`PASS` / `REVISE` / `FAIL`); a `PASS` mints a non-transferable, self-rendering certificate to your wallet. A second, fully autonomous agent **runs the exam itself** — recalibrating how strict it is and choosing, each season, what to scrutinise most — with no human in the loop.
 
-> Live on Somnia Shannon testnet. Every verdict below is a real on-chain transaction (addresses + explorer links at the end).
+> **Live demo:** **https://verdictum-iota.vercel.app/** · Live on Somnia Shannon testnet — every verdict below is a real on-chain transaction (addresses + explorer links at the end).
 
 ---
 
@@ -46,8 +46,15 @@ It rewards concrete specificity, named projects, metrics, and genuine role-fit; 
 - 💼 **Job Application Screening** — *flagship.* Clear the recruiter's written screen.
 - 🎓 **Statement of Purpose** — *admissions.* An AI committee screens your statement of purpose / personal statement.
 - 🖊️ **Sell Me This Pen** — *free / for fun.* Top-of-funnel; pitch anything to a buyer that can't be charmed.
+- ✦ **Community examiners** — *permissionless.* Anyone can publish their own examiner on-chain (see below); they appear in the picker with a `COMMUNITY` badge.
 
 One sharp flagship, a general platform underneath — essays, statements of purpose, scholarship and grant applications, certifications. *(Education is the kicker, not the pitch: it happens to make a great study-by-replay tool.)*
+
+---
+
+## Anyone can publish an examiner (permissionless)
+
+The creator marketplace isn't a roadmap item — its core primitive is **live on-chain.** Anyone can call `createChallenge(label, persona)` (a small `0.5 STT` anti-spam fee) to register their own **community examiner**: the author writes only the *role and rubric*, and the contract always appends the same fixed security suffix — so a community author **cannot weaken the anti-injection defense.** Each new examiner is content-addressed (`keccak256(creator, label, persona)`), immutable once registered, and instantly attemptable by anyone. It shows up in the picker with a `COMMUNITY` badge and a `by 0x…` byline, and credentials won under it are stamped `COMMUNITY` as well. A live example — *"Pitch to a Venture Capitalist"* — was registered through exactly this path.
 
 ---
 
@@ -125,9 +132,9 @@ A `PASS` mints an **ERC-5192 soulbound** token: non-transferable by design (a cr
 
 | Contract | Address | Role |
 |---|---|---|
-| `VerdictumJudge` | [`0x16CBe69E9890eaC1E483f434eBa7Dc514703Db6a`](https://shannon-explorer.somnia.network/address/0x16CBe69E9890eaC1E483f434eBa7Dc514703Db6a) | multi-challenge examiner |
-| `Credential` (ERC-5192) | [`0x93F333e11c771AeAD2E6f2e4F8Ff1E73C544c963`](https://shannon-explorer.somnia.network/address/0x93F333e11c771AeAD2E6f2e4F8Ff1E73C544c963) | soulbound, self-rendering SVG cert |
-| `Inspector` (Governor) | [`0xCd98B29737F2aC9C04225504b68D630Cd83A3Dc1`](https://shannon-explorer.somnia.network/address/0xCd98B29737F2aC9C04225504b68D630Cd83A3Dc1) | autonomous strictness + self-running exam seasons (LLM-chosen focus) |
+| `VerdictumJudge` | [`0xa169b1528D6CB9Ac790D2A76802E1BDe0d0dB93C`](https://shannon-explorer.somnia.network/address/0xa169b1528D6CB9Ac790D2A76802E1BDe0d0dB93C) | multi-challenge examiner + permissionless community examiners |
+| `Credential` (ERC-5192) | [`0x3203332165Fa483e317095DcBA7d56d2ED4E15bC`](https://shannon-explorer.somnia.network/address/0x3203332165Fa483e317095DcBA7d56d2ED4E15bC) | soulbound, self-rendering SVG cert |
+| `Inspector` (Governor) | [`0xbC5976F8bDB470D43D58C88BA89Bd08711aF9Ee0`](https://shannon-explorer.somnia.network/address/0xbC5976F8bDB470D43D58C88BA89Bd08711aF9Ee0) | autonomous strictness + self-running exam seasons (LLM-chosen focus) |
 
 - **Somnia Platform** (`IAgentRequester`): `0x037Bb9C718F3f7fe5eCBDB0b600D607b52706776`
 - **On-chain LLM agentId** (in consensus): `12847293847561029384` · **RPC**: `https://dream-rpc.somnia.network` · **Token**: STT
@@ -141,8 +148,9 @@ Full transaction log (deploy, wiring, seeded challenges, the live PASS/FAIL smok
 
 ```
 src/
-  VerdictumJudge.sol   multi-challenge examiner: curated bytes32-keyed personas + fixed security
-                       suffix; submit(challengeId, statement) → inferString verdict → mint on PASS
+  VerdictumJudge.sol   multi-challenge examiner: curated bytes32-keyed personas + permissionless
+                       community createChallenge, both with the fixed security suffix appended;
+                       submit(challengeId, statement) → inferString verdict → mint on PASS
   Credential.sol       soulbound ERC-5192; on-chain base64 SVG tokenURI; only the judge mints
   Inspector.sol        autonomy: permissionless tick() → inferNumber → strictness
   interfaces/          ISomniaAgents.sol (IAgentRequester / ILLMAgent / Response / Request …)
@@ -167,7 +175,7 @@ Judge, Credential, and Inspector are deployed separately and wired once via owne
 ```shell
 # contracts
 forge install && forge build
-FOUNDRY_PROFILE=ci forge test -vvv       # 39 unit tests
+FOUNDRY_PROFILE=ci forge test -vvv       # 52 unit tests
 
 # front-end — option A: type-safe dapp (Vite + React + wagmi/viem + RainbowKit)
 cd app && npm install && npm run dev      # http://localhost:5173
@@ -185,7 +193,7 @@ Either front-end connects a wallet, adds/switches to Somnia, lets you pick a cha
 Real, existing paid markets validate willingness to pay: application/essay coaching, mock-screening services, test prep. Verdictum becomes the trustless rails:
 
 - **Transactional** — a micro-fee per attempt on a high-stakes challenge.
-- **Creator marketplace** — anyone publishes an examiner (persona + rubric); the contract auto-splits the fee, **trustlessly**, each time someone earns that creator's credential.
+- **Creator marketplace** — the publishing primitive is **already live** (permissionless `createChallenge`: anyone registers an examiner from persona + rubric). The paid layer on top — auto-splitting each creator's fee, **trustlessly**, when someone earns their credential — is the remaining build.
 - **B2B** — recruiters / institutions consume or white-label credentials; the public verify page is the hook. The credential's value to a third party is exactly what the un-bribable, consensus-run judge makes possible.
 
 The demo proves the *mechanism*; the business is the narrative around it. (Not built: checkout, subscriptions, fee-split, dashboards.)
