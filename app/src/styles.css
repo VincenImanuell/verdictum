@@ -855,7 +855,7 @@ footer {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  opacity: 0.92;
+  opacity: 0.8;
   /* gently dim only the very center so the headline stays crisp; keep the writing visible */
   -webkit-mask-image: radial-gradient(120% 95% at 50% 42%, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.35) 14%, #000 60%);
   mask-image: radial-gradient(120% 95% at 50% 42%, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.35) 14%, #000 60%);
