@@ -122,7 +122,7 @@ export default function SubmitPanel() {
         <h2 style={{ margin: 0 }}>Make your case</h2>
         <span className="eyebrow">{challenge.title}</span>
       </div>
-      <textarea maxLength={2000} placeholder={challenge.ph} value={text} onChange={(e) => setText(e.target.value)} />
+      <textarea data-lenis-prevent maxLength={2000} placeholder={challenge.ph} value={text} onChange={(e) => setText(e.target.value)} />
       <div className="spread" style={{ marginTop: 12, flexWrap: "wrap", gap: 10 }}>
         <div className="row" style={{ fontSize: 12.5 }}>
           <span className="muted">Strictness in force</span>

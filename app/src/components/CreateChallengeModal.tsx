@@ -81,7 +81,7 @@ export default function CreateChallengeModal({
 
   return (
     <div className="overlay" onClick={busy ? undefined : onClose}>
-      <div className="modal" onClick={(e) => e.stopPropagation()}>
+      <div className="modal" data-lenis-prevent onClick={(e) => e.stopPropagation()}>
         <div className="spread" style={{ marginBottom: 4 }}>
           <h2 style={{ margin: 0 }}>Create your own examiner</h2>
           <button className="modal-x" onClick={onClose} disabled={busy} aria-label="Close">

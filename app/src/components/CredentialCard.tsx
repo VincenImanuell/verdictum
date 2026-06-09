@@ -70,7 +70,7 @@ export default function CredentialCard({ tokenId, community }: { tokenId: bigint
           <span className="lock">
             <Icon name="soulbound" size={14} className="ico-pad" /> Soulbound · ERC-5192 · non-transferable
           </span>
-          <a target="_blank" href={`${EXPLORER}/token/${ADDR.credential}/instance/${tokenId.toString()}`}>
+          <a target="_blank" rel="noreferrer" href={`${EXPLORER}/address/${ADDR.credential}`}>
             View on explorer ↗
           </a>
         </div>
