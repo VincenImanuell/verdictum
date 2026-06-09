@@ -844,7 +844,7 @@ footer {
 .lhero {
   position: relative;
   overflow: hidden;
-  padding: 92px 0 64px;
+  padding: 60px 0 44px;
   text-align: center;
 }
 .aurora {
@@ -994,10 +994,10 @@ footer {
 .lhero h1 {
   font-family: "Clash Display";
   font-weight: 500;
-  font-size: clamp(36px, 6vw, 66px);
+  font-size: clamp(34px, 5.4vw, 60px);
   line-height: 1.1;
   letter-spacing: -0.02em;
-  margin: 24px auto 0;
+  margin: 18px auto 0;
   max-width: 19ch;
   padding-bottom: 0.08em;
 }
@@ -1034,7 +1034,7 @@ footer {
 }
 .lhero-sub {
   max-width: 660px;
-  margin: 22px auto 0;
+  margin: 18px auto 0;
   color: var(--muted);
   font-size: clamp(15px, 1.7vw, 18px);
   line-height: 1.62;
@@ -1043,7 +1043,7 @@ footer {
   display: flex;
   gap: 14px;
   justify-content: center;
-  margin-top: 34px;
+  margin-top: 24px;
   flex-wrap: wrap;
 }
 .btn-lg {
@@ -1074,7 +1074,7 @@ footer {
   grid-template-columns: repeat(4, 1fr);
   gap: 1px;
   max-width: 880px;
-  margin: 54px auto 0;
+  margin: 40px auto 0;
   border: 1px solid var(--hairline);
   border-radius: 16px;
   overflow: hidden;
