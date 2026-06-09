@@ -7,6 +7,7 @@ import Docket from "./components/Docket";
 import Seal from "./components/Seal";
 import Typewriter from "./components/Typewriter";
 import Icon from "./components/Icon";
+import heroBg from "./assets/bg.jpg";
 
 const FOCI: [string, string][] = [
   ["EVIDENCE", "concrete proof, data & numbers"],
@@ -222,6 +223,7 @@ export default function Landing() {
 
       {/* HERO */}
       <section className="lhero">
+        <div className="lhero-bg" style={{ backgroundImage: `url(${heroBg})` }} />
         <div className="aurora" />
         <div className="gridfade" />
         {/* ambient floating keywords — the pillars, drifting behind the headline */}

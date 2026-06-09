@@ -847,6 +847,19 @@ footer {
   padding: 60px 0 44px;
   text-align: center;
 }
+.lhero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.6;
+  /* fade the texture out of the center so the headline stays crisp, keep it at the edges */
+  -webkit-mask-image: radial-gradient(115% 90% at 50% 42%, transparent 0%, transparent 28%, #000 78%);
+  mask-image: radial-gradient(115% 90% at 50% 42%, transparent 0%, transparent 28%, #000 78%);
+}
 .aurora {
   position: absolute;
   inset: -22% -10% auto -10%;
@@ -969,13 +982,6 @@ footer {
 @media (max-width: 1080px) {
   .fw {
     display: none;
-  }
-}
-/* On desktop (where the chips show), reserve the headline's full height up front
-   so the typewriter doesn't reflow the hero line-by-line and jolt the chips. */
-@media (min-width: 1081px) {
-  .lhero h1 {
-    min-height: 4.4em; /* ~4 wrapped lines at line-height 1.1 */
   }
 }
 .lbadge {
