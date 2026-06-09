@@ -224,6 +224,11 @@ export default function Landing() {
       <section className="lhero">
         <div className="aurora" />
         <div className="gridfade" />
+        {/* ambient floating keywords — the pillars, drifting behind the headline */}
+        <span className="fw fw-1" aria-hidden="true">verdict</span>
+        <span className="fw fw-2" aria-hidden="true">examine</span>
+        <span className="fw fw-3" aria-hidden="true">consensus</span>
+        <span className="fw fw-4" aria-hidden="true">trustless</span>
         <div className="lwrap lhero-in">
           <span className="lbadge">
             <span className={`dot${stats.ready ? " on" : ""}`} />

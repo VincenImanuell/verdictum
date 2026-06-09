@@ -875,6 +875,78 @@ footer {
   position: relative;
   z-index: 1;
 }
+
+/* Ambient floating keyword chips — drift behind the hero headline (z-index 0 < content). */
+.fw {
+  --rot: 0deg;
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+  font-family: "Clash Display", "General Sans", sans-serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+  color: var(--muted);
+  padding: 7px 15px;
+  border-radius: 11px;
+  border: 1px solid var(--hairline);
+  background: linear-gradient(180deg, rgba(27, 34, 51, 0.7), rgba(16, 20, 28, 0.5));
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  white-space: nowrap;
+  animation: floatword 7.5s ease-in-out infinite alternate;
+}
+/* the two punchy pillars glow gold */
+.fw-1,
+.fw-4 {
+  color: var(--gold);
+  border-color: rgba(233, 196, 106, 0.34);
+}
+.fw-1 {
+  left: 4.5%;
+  top: 28%;
+  --rot: -7deg;
+  animation-duration: 7s;
+  animation-delay: 0s;
+}
+.fw-2 {
+  left: 7.5%;
+  top: 61%;
+  --rot: 5deg;
+  animation-duration: 8.6s;
+  animation-delay: 1.1s;
+}
+.fw-3 {
+  right: 5.5%;
+  top: 36%;
+  --rot: 6deg;
+  animation-duration: 7.8s;
+  animation-delay: 0.6s;
+}
+.fw-4 {
+  right: 6.5%;
+  top: 67%;
+  --rot: -5deg;
+  animation-duration: 9.1s;
+  animation-delay: 1.7s;
+}
+@keyframes floatword {
+  from {
+    transform: translateY(7px) rotate(var(--rot));
+  }
+  to {
+    transform: translateY(-9px) rotate(calc(var(--rot) + 2.5deg));
+  }
+}
+/* hide on narrower screens — they'd collide with the centered headline */
+@media (max-width: 1080px) {
+  .fw {
+    display: none;
+  }
+}
 .lbadge {
   display: inline-flex;
   align-items: center;
