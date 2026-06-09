@@ -1,23 +1,31 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import Lenis from "lenis";
 import Landing from "./Landing";
 import AppView from "./AppView";
 
-/** Walrus-style inertial smooth scrolling, with offset anchor links + per-route reset. */
+/**
+ * Walrus-style inertial smooth scrolling — but ONLY on the landing page.
+ * The dapp view (/app) re-renders every second (live countdown, Docket, wagmi polling);
+ * Lenis's RAF loop competes with those renders and stutters. Native scroll there is
+ * buttery and immune to re-render jank. Anchor links + per-route scroll reset included.
+ */
 function useSmoothScroll() {
   const { pathname } = useLocation();
-  const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    // /app and reduced-motion → native scroll, just reset to top on entry.
+    if (pathname !== "/" || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      window.scrollTo(0, 0);
+      return;
+    }
 
     const lenis = new Lenis({
       duration: 1.1,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
     });
-    lenisRef.current = lenis;
+    lenis.scrollTo(0, { immediate: true });
 
     let raf = 0;
     const loop = (time: number) => {
@@ -42,13 +50,7 @@ function useSmoothScroll() {
       cancelAnimationFrame(raf);
       document.removeEventListener("click", onClick);
       lenis.destroy();
-      lenisRef.current = null;
     };
-  }, []);
-
-  useEffect(() => {
-    if (lenisRef.current) lenisRef.current.scrollTo(0, { immediate: true });
-    else window.scrollTo(0, 0);
   }, [pathname]);
 }
 
