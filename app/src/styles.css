@@ -900,17 +900,18 @@ footer {
   user-select: none;
   font-family: "Clash Display", "General Sans", sans-serif;
   font-style: italic;
-  font-weight: 500;
-  font-size: 15px;
+  font-weight: 600;
+  font-size: 16.5px;
   letter-spacing: 0.01em;
-  color: var(--muted);
-  padding: 7px 15px;
+  color: var(--ink);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.6);
+  padding: 8px 16px;
   border-radius: 11px;
-  border: 1px solid var(--hairline);
-  background: linear-gradient(180deg, rgba(27, 34, 51, 0.7), rgba(16, 20, 28, 0.5));
-  -webkit-backdrop-filter: blur(4px);
-  backdrop-filter: blur(4px);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(120, 140, 180, 0.45);
+  background: linear-gradient(180deg, rgba(30, 38, 56, 0.88), rgba(16, 20, 28, 0.74));
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.06);
   white-space: nowrap;
   /* on load each chip flies out from the page center & fades in (fwEnter),
      then hands off seamlessly to the idle drift (floatword) — set per chip below */
@@ -919,8 +920,8 @@ footer {
 /* the two punchy pillars glow gold */
 .fw-1,
 .fw-4 {
-  color: var(--gold);
-  border-color: rgba(233, 196, 106, 0.34);
+  color: var(--gold-hi);
+  border-color: rgba(233, 196, 106, 0.55);
 }
 .fw-1 {
   left: 4.5%;
