@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { usePublicClient } from "wagmi";
 import { ADDR, judgeAbi, inspAbi, credAbi } from "../contracts";
+import { useAppSelector } from "../hooks";
+import { selectRefreshNonce } from "../uiSlice";
 
 interface VRow {
   v: number;
@@ -21,7 +23,8 @@ const VLABEL: Record<number, { w: string; c: string }> = {
 };
 const short = (a: string) => `${a.slice(0, 6)}…${a.slice(-4)}`;
 
-export default function Docket({ refreshKey }: { refreshKey?: number }) {
+export default function Docket() {
+  const refreshKey = useAppSelector(selectRefreshNonce);
   const client = usePublicClient();
   const [total, setTotal] = useState(0);
   const [strictness, setStrictness] = useState(50);

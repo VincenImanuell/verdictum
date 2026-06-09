@@ -45,7 +45,7 @@ It rewards concrete specificity, named projects, metrics, and genuine role-fit; 
 
 - 💼 **Job Application Screening** — *flagship.* Clear the recruiter's written screen.
 - 🎓 **Statement of Purpose** — *admissions.* An AI committee screens your statement of purpose / personal statement.
-- 🔥 **Defend Yourself From Mom** — *free / for fun.* Top-of-funnel; a credential that's a meme.
+- 🖊️ **Sell Me This Pen** — *free / for fun.* Top-of-funnel; pitch anything to a buyer that can't be charmed.
 
 One sharp flagship, a general platform underneath — essays, statements of purpose, scholarship and grant applications, certifications. *(Education is the kicker, not the pitch: it happens to make a great study-by-replay tool.)*
 

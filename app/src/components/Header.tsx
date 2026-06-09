@@ -1,12 +1,13 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { Link } from "react-router-dom";
+import Seal from "./Seal";
 
 export default function Header() {
   return (
     <header className="bar">
       <div className="wrap spread" style={{ paddingTop: 12, paddingBottom: 12 }}>
         <Link to="/" className="brand" style={{ color: "inherit", textDecoration: "none" }}>
-          <div className="seal">V</div>
+          <Seal />
           <div>
             <div className="word">VERDICTUM</div>
             <div className="tagline">

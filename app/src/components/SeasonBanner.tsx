@@ -3,6 +3,8 @@ import { useAccount, usePublicClient, useWriteContract } from "wagmi";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { parseEther } from "viem";
 import { ADDR, judgeAbi, inspAbi, platformAbi } from "../contracts";
+import { useAppDispatch } from "../hooks";
+import { triggerRefresh } from "../uiSlice";
 
 const FOCUS_DESC: Record<string, { en: string }> = {
   EVIDENCE: { en: "concrete proof, data & numbers" },
@@ -14,7 +16,8 @@ const FOCUS_DESC: Record<string, { en: string }> = {
 };
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-export default function SeasonBanner({ onChange }: { onChange?: () => void }) {
+export default function SeasonBanner() {
+  const dispatch = useAppDispatch();
   const { isConnected } = useAccount();
   const { openConnectModal } = useConnectModal();
   const client = usePublicClient();
@@ -42,7 +45,7 @@ export default function SeasonBanner({ onChange }: { onChange?: () => void }) {
       if (prevSeason.current && sNum > prevSeason.current) {
         setStamp(true);
         setTimeout(() => setStamp(false), 600);
-        onChange?.();
+        dispatch(triggerRefresh());
       }
       prevSeason.current = sNum;
       setSeason(sNum);

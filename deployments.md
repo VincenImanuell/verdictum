@@ -27,13 +27,14 @@ Seeded challenges (`challengeCount`=3), id = `keccak256(handle)`:
 |---|---|---|
 | job-screening | `0xfe8076e403d326e10828e1f4b8c02c3977d2dcb85c2acb527c7c3df3a01c9fdd` | Job Application Screening (flagship) |
 | statement-of-purpose | `0x9dc0e540bcb66feb716386610198c9bcffde0149a850ef674002c6e9e67df35d` | Statement of Purpose (admissions) |
-| defend-from-mom-v2 | `0xb0e078d425b932d86768fbae797f20fc71289b343659bc2ba92b663663d475da` | Defend Yourself From Mom (free/fun; relevance-hardened) |
+| sell-me-this-pen-v2 | `0x4ad5ecaac6a190e8c2b5d4a08a7d031dd7e088c19df214dbfd54a916236b7963` | Sell Me This Pen (free/fun; relevance-hardened) |
+| ~~defend-from-mom-v2~~ (retired) | `0xb0e078d425b932d86768fbae797f20fc71289b343659bc2ba92b663663d475da` | Defend Yourself From Mom — replaced by Sell Me This Pen; still registered on-chain but no longer shown in the app |
 
-> The "Defend Yourself From Mom" persona is relevance-hardened: an early lenient version let a
-> well-written but OFF-TOPIC submission (e.g. a job cover letter) earn a PASS, so the persona now adds a
-> "relevance first — off-topic ⇒ FAIL regardless of polish" clause. Verified live earlier: a job cover
-> letter → FAIL, a genuine excuse → PASS, and a genuine excuse → the Job flagship → FAIL (the flagship
-> already enforced relevance).
+> The "Sell Me This Pen" persona is relevance-hardened the same way the others are: an OFF-TOPIC
+> submission (e.g. a cover letter or an essay that never names a product) earns FAIL regardless of
+> polish; only a genuine sales pitch is judged on merit. It replaces the earlier "Defend Yourself From
+> Mom" challenge as the free/fun slot. Note: the contract has no removeChallenge, so the old mom id stays
+> registered on-chain — the frontend simply stops listing it.
 
 **Live verification on this clean set (on-chain LLM in consensus):**
 - **Autonomous season advance** — `advanceSeason()` (permissionless, time-gated): the on-chain LLM picked

@@ -4,6 +4,8 @@ import { usePublicClient } from "wagmi";
 import { ADDR, judgeAbi, credAbi, CHALLENGES } from "./contracts";
 import { EXPLORER } from "./wagmi";
 import Docket from "./components/Docket";
+import Seal from "./components/Seal";
+import Typewriter from "./components/Typewriter";
 
 const FOCI: [string, string][] = [
   ["EVIDENCE", "concrete proof, data & numbers"],
@@ -197,7 +199,7 @@ export default function Landing() {
       <header className={`lnav${scrolled ? " scrolled" : ""}`}>
         <div className="lwrap lnav-in">
           <Link to="/" className="brand" style={{ color: "inherit", textDecoration: "none" }}>
-            <div className="seal">V</div>
+            <Seal />
             <div className="word">VERDICTUM</div>
           </Link>
           <nav className="lnav-links">
@@ -229,8 +231,15 @@ export default function Landing() {
               : "On-chain AI examiner · Somnia"}
           </span>
           <h1>
-            An AI examiner that <span className="g">can't be bribed</span>. A credential that{" "}
-            <span className="g">can't be faked</span>.
+            <Typewriter
+              segments={[
+                { text: "An AI examiner that " },
+                { text: "can't be bribed", cls: "g" },
+                { text: ". A credential that " },
+                { text: "can't be faked", cls: "g" },
+                { text: "." },
+              ]}
+            />
           </h1>
           <p className="lhero-sub">
             Verdictum runs its judge <em>inside</em> Somnia's validator consensus — not on a server we
@@ -518,7 +527,7 @@ export default function Landing() {
               <summary>What does it cost me?</summary>
               <p>
                 Reading the Docket and verifying a credential is free. Submitting a statement costs a small
-                inference deposit in testnet STT plus gas. The “Defend Yourself From Mom” court is free to try.
+                inference deposit in testnet STT plus gas. The “Sell Me This Pen” court is free to try.
               </p>
             </details>
             <details>
@@ -569,7 +578,7 @@ export default function Landing() {
         <div className="lwrap lfoot-grid">
           <div>
             <div className="brand" style={{ marginBottom: 10 }}>
-              <div className="seal">V</div>
+              <Seal />
               <div className="word">VERDICTUM</div>
             </div>
             <div className="muted" style={{ fontSize: 13, maxWidth: 280 }}>

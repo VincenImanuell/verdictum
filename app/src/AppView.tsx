@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { CHALLENGES, type Challenge, ADDR } from "./contracts";
+import { ADDR } from "./contracts";
 import { EXPLORER } from "./wagmi";
 import Header from "./components/Header";
 import SeasonBanner from "./components/SeasonBanner";
@@ -10,13 +9,10 @@ import Docket from "./components/Docket";
 import VerifyPanel from "./components/VerifyPanel";
 
 export default function AppView() {
-  const [selected, setSelected] = useState<Challenge>(CHALLENGES[0]);
-  const [bump, setBump] = useState(0);
-
   return (
     <>
       <Header />
-      <SeasonBanner onChange={() => setBump((b) => b + 1)} />
+      <SeasonBanner />
       <div className="wrap">
         <section className="apphead">
           <span className="eyebrow">The Court is in session</span>
@@ -27,10 +23,10 @@ export default function AppView() {
           </p>
         </section>
 
-        <ChallengePicker selected={selected} onSelect={setSelected} />
-        <SubmitPanel challenge={selected} />
+        <ChallengePicker />
+        <SubmitPanel />
         <InspectorPanel />
-        <Docket refreshKey={bump} />
+        <Docket />
         <VerifyPanel />
 
         <footer>

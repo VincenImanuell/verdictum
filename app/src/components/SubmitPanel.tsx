@@ -2,8 +2,10 @@ import { useEffect, useState, type ReactNode } from "react";
 import { useAccount, usePublicClient, useReadContract, useWriteContract } from "wagmi";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { parseEther, parseEventLogs } from "viem";
-import { ADDR, judgeAbi, platformAbi, type Challenge } from "../contracts";
+import { ADDR, judgeAbi, platformAbi } from "../contracts";
 import { EXPLORER } from "../wagmi";
+import { useAppSelector } from "../hooks";
+import { selectChallengeObj } from "../uiSlice";
 import Consensus from "./Consensus";
 import CredentialCard from "./CredentialCard";
 
@@ -16,7 +18,8 @@ const VWORD: Record<number, { en: string; cls: string; noteEn: string }> = {
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-export default function SubmitPanel({ challenge }: { challenge: Challenge }) {
+export default function SubmitPanel() {
+  const challenge = useAppSelector(selectChallengeObj);
   const { isConnected } = useAccount();
   const { openConnectModal } = useConnectModal();
   const client = usePublicClient();

@@ -1,12 +1,11 @@
-import { CHALLENGES, type Challenge } from "../contracts";
+import { CHALLENGES } from "../contracts";
+import { useAppDispatch, useAppSelector } from "../hooks";
+import { selectChallenge, selectSelectedKey } from "../uiSlice";
 
-export default function ChallengePicker({
-  selected,
-  onSelect,
-}: {
-  selected: Challenge;
-  onSelect: (c: Challenge) => void;
-}) {
+export default function ChallengePicker() {
+  const selectedKey = useAppSelector(selectSelectedKey);
+  const dispatch = useAppDispatch();
+
   return (
     <section className="section">
       <h2>Choose your examination</h2>
@@ -15,9 +14,9 @@ export default function ChallengePicker({
       </p>
       <div className="tiles">
         {CHALLENGES.map((c) => {
-          const cls = `tile${c.featured ? " featured" : ""}${c.key === selected.key ? " sel" : ""}`;
+          const cls = `tile${c.featured ? " featured" : ""}${c.key === selectedKey ? " sel" : ""}`;
           return (
-            <button key={c.key} className={cls} onClick={() => onSelect(c)}>
+            <button key={c.key} className={cls} onClick={() => dispatch(selectChallenge(c.key))}>
               <div className="top-accent" />
               {c.featured && <div className="ribbon">FLAGSHIP</div>}
               <div className="ico">{c.icon}</div>

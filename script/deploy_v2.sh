@@ -48,14 +48,14 @@ echo "   seasonLength = $(call "$INSP" 'seasonLength()(uint64)')  seasonDueAt = 
 
 JOB=$(cast keccak 'job-screening')
 SOP=$(cast keccak 'statement-of-purpose')
-MOM=$(cast keccak 'defend-from-mom-v2')
+PEN=$(cast keccak 'sell-me-this-pen-v2')
 
 echo ">> addChallenge: Job Application Screening (flagship)..."
 send "$JUDGE" "addChallenge(bytes32,string,string)" "$JOB" "Job Application Screening" "$(cat script/personas/job-screening.txt)"
 echo ">> addChallenge: Statement of Purpose (admissions)..."
 send "$JUDGE" "addChallenge(bytes32,string,string)" "$SOP" "Statement of Purpose" "$(cat script/personas/statement-of-purpose.txt)"
-echo ">> addChallenge: Defend Yourself From Mom (free/fun)..."
-send "$JUDGE" "addChallenge(bytes32,string,string)" "$MOM" "Defend Yourself From Mom" "$(cat script/personas/defend-from-mom.txt)"
+echo ">> addChallenge: Sell Me This Pen (free/fun)..."
+send "$JUDGE" "addChallenge(bytes32,string,string)" "$PEN" "Sell Me This Pen" "$(cat script/personas/sell-me-this-pen.txt)"
 
 echo "   challengeCount = $(call "$JUDGE" 'challengeCount()(uint256)')"
 
@@ -65,7 +65,7 @@ CRED=$CRED
 INSP=$INSP
 JOB_ID=$JOB
 SOP_ID=$SOP
-MOM_ID=$MOM
+PEN_ID=$PEN
 EOF
 
 echo ""
@@ -75,5 +75,5 @@ echo "CRED=$CRED"
 echo "INSP=$INSP"
 echo "JOB_ID=$JOB"
 echo "SOP_ID=$SOP"
-echo "MOM_ID=$MOM"
+echo "PEN_ID=$PEN"
 echo "(wrote script/addresses.env — smoke_test.sh / jailbreak_gauntlet.sh read it)"

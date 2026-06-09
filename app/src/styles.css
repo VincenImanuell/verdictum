@@ -167,6 +167,14 @@ header.bar {
   font-weight: 600;
   font-size: 18px;
   background: radial-gradient(circle at 50% 30%, rgba(233, 196, 106, 0.12), transparent);
+  overflow: hidden;
+}
+.seal img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
 }
 .word {
   font-family: "Clash Display";
@@ -899,6 +907,27 @@ footer {
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
   padding-bottom: 0.04em;
+}
+/* typewriter caret — sits on the headline baseline, blinks gold */
+.tw-caret {
+  display: inline-block;
+  width: 0.045em;
+  height: 0.92em;
+  margin-left: 0.06em;
+  vertical-align: -0.06em;
+  background: var(--gold);
+  border-radius: 1px;
+  animation: tw-blink 1.05s steps(1) infinite;
+}
+@keyframes tw-blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  50.01%,
+  100% {
+    opacity: 0;
+  }
 }
 .lhero-sub {
   max-width: 660px;
