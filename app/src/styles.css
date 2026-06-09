@@ -693,6 +693,21 @@ footer {
   background: rgba(16, 20, 28, 0.82);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--hairline);
+  /* ease the banner in once the season data loads, instead of popping in */
+  animation: seasonIn 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  transform-origin: top;
+}
+@keyframes seasonIn {
+  from {
+    opacity: 0;
+    transform: translateY(-16px);
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    clip-path: inset(0 0 0 0);
+  }
 }
 .seasonrow {
   display: flex;
