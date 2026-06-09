@@ -146,7 +146,8 @@ export interface Challenge {
   key: string;
   id: Hex;
   label: string;
-  icon: string;
+  icon: string; // emoji/glyph fallback (community tiles use ✦)
+  iconKey?: "job" | "sop" | "pen"; // curated challenges render engraved-gold artwork instead of the emoji
   featured?: boolean;
   free?: boolean;
   title: string;
@@ -161,6 +162,7 @@ export const CHALLENGES: Challenge[] = [
     key: "job",
     featured: true,
     icon: "💼",
+    iconKey: "job",
     id: "0xfe8076e403d326e10828e1f4b8c02c3977d2dcb85c2acb527c7c3df3a01c9fdd",
     label: "Job Application Screening",
     title: "Job Application Screening",
@@ -170,6 +172,7 @@ export const CHALLENGES: Challenge[] = [
   {
     key: "sop",
     icon: "🎓",
+    iconKey: "sop",
     id: "0x9dc0e540bcb66feb716386610198c9bcffde0149a850ef674002c6e9e67df35d",
     label: "Statement of Purpose",
     title: "Statement of Purpose",
@@ -179,6 +182,7 @@ export const CHALLENGES: Challenge[] = [
   {
     key: "pen",
     icon: "🖊️",
+    iconKey: "pen",
     free: true,
     id: "0x4ad5ecaac6a190e8c2b5d4a08a7d031dd7e088c19df214dbfd54a916236b7963",
     label: "Sell Me This Pen",

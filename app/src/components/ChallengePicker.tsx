@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from "../hooks";
 import { addCommunity, selectChallenge, selectCommunity, selectSelectedKey } from "../uiSlice";
 import { useCommunityChallenges } from "../useCommunityChallenges";
 import CreateChallengeModal from "./CreateChallengeModal";
+import Icon from "./Icon";
 
 const short = (a?: string) => (a ? `${a.slice(0, 6)}…${a.slice(-4)}` : "");
 
@@ -20,7 +21,7 @@ export default function ChallengePicker() {
       <button key={c.key} className={cls} onClick={() => dispatch(selectChallenge(c.key))}>
         <div className="top-accent" />
         {c.featured && <div className="ribbon">FLAGSHIP</div>}
-        <div className="ico">{c.icon}</div>
+        <div className="ico">{c.iconKey ? <Icon name={c.iconKey} size={30} /> : c.icon}</div>
         <div>
           <h3>
             {c.title}

@@ -3,6 +3,7 @@ import { usePublicClient } from "wagmi";
 import { ADDR, judgeAbi, inspAbi, credAbi } from "../contracts";
 import { useAppSelector } from "../hooks";
 import { selectRefreshNonce } from "../uiSlice";
+import Icon from "./Icon";
 
 interface VRow {
   v: number;
@@ -149,7 +150,9 @@ export default function Docket() {
           {rulings.length === 0 && <div className="faint" style={{ fontSize: 12.5 }}>the board has not yet acted in range</div>}
           {rulings.map((rl, i) => (
             <div key={i} className="docrow">
-              <span style={{ color: rl.kind === "season" ? "var(--gold)" : "var(--lapis)" }}>{rl.kind === "season" ? "⚖" : "▲"}</span>
+              <span style={{ color: rl.kind === "season" ? "var(--gold)" : "var(--lapis)" }}>
+                {rl.kind === "season" ? <Icon name="verdict" size={14} /> : "▲"}
+              </span>
               <span style={{ fontSize: 12.8 }}>{rl.text}</span>
             </div>
           ))}

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { usePublicClient } from "wagmi";
 import { ADDR, credAbi } from "../contracts";
 import { EXPLORER } from "../wagmi";
+import Icon from "./Icon";
 
 interface Receipt {
   img: string;
@@ -91,7 +92,7 @@ export default function VerifyPanel() {
               </a>
             </div>
             <div className="k">Soulbound</div>
-            <div className="v">{data.locked ? "yes 🔒" : "no"}</div>
+            <div className="v">{data.locked ? <>yes <Icon name="soulbound" size={13} className="ico-pad" /></> : "no"}</div>
           </div>
         </div>
       )}

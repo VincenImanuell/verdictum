@@ -5,6 +5,7 @@ import { parseEther } from "viem";
 import { ADDR, inspAbi, judgeAbi, platformAbi } from "../contracts";
 import { EXPLORER } from "../wagmi";
 import Consensus from "./Consensus";
+import Icon from "./Icon";
 
 const ARC = Math.PI * 90; // semicircle length
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -104,7 +105,7 @@ export default function InspectorPanel() {
             </span>
           </div>
           <button className="btn" style={{ marginTop: 12 }} disabled={busy} onClick={tick}>
-            Trigger recalibration (tick) 🔁
+            Trigger recalibration (tick) <Icon name="recalibrate" size={14} className="btn-ico" />
           </button>
         </div>
       </div>

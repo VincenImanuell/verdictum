@@ -5,6 +5,7 @@ import { parseEther } from "viem";
 import { ADDR, judgeAbi, inspAbi, platformAbi } from "../contracts";
 import { useAppDispatch } from "../hooks";
 import { triggerRefresh } from "../uiSlice";
+import Icon from "./Icon";
 
 const FOCUS_DESC: Record<string, { en: string }> = {
   EVIDENCE: { en: "concrete proof, data & numbers" },
@@ -129,10 +130,16 @@ export default function SeasonBanner() {
             <b style={{ color: gate.c }}>{gate.en}</b>
           </span>
           <span className="pill mono" title="until the season may advance">
-            ⏳ {due ? "season due" : `${mm}:${ss.toString().padStart(2, "0")}`}
+            <Icon name="season" size={14} className="ico-pad" /> {due ? "season due" : `${mm}:${ss.toString().padStart(2, "0")}`}
           </span>
           <button className="btn" disabled={busy || !due} onClick={advance}>
-            {busy ? "recalibrating…" : "Advance season 🔁"}
+            {busy ? (
+              "recalibrating…"
+            ) : (
+              <>
+                Advance season <Icon name="recalibrate" size={14} className="btn-ico" />
+              </>
+            )}
           </button>
         </div>
       </div>

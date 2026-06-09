@@ -1071,6 +1071,22 @@ footer {
   border: 1px solid var(--hairline);
   background: var(--raised);
 }
+
+/* Engraved-gold artwork icons (Icon.tsx). Base keeps every icon inline with text;
+   helpers add the small spacing emoji used to get for free. */
+.vicon {
+  display: inline-block;
+  vertical-align: middle;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.btn-ico {
+  margin-left: 7px;
+}
+.ico-pad {
+  margin: 0 4px;
+}
 .moat-card h3 {
   font-family: "Clash Display";
   font-weight: 500;

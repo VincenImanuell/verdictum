@@ -8,6 +8,7 @@ import { useAppSelector } from "../hooks";
 import { selectChallengeObj } from "../uiSlice";
 import Consensus from "./Consensus";
 import CredentialCard from "./CredentialCard";
+import Icon from "./Icon";
 
 const VWORD: Record<number, { en: string; cls: string; noteEn: string }> = {
   1: { en: "PASS", cls: "pass", noteEn: "Advanced. Specific, evidenced, and convincing." },
@@ -136,7 +137,7 @@ export default function SubmitPanel() {
             {bytes} / 2000
           </span>
           <button className="btn btn-primary" disabled={awaiting || text.trim().length === 0 || tooLong} onClick={onSubmit}>
-            Submit to the Court ⚖
+            Submit to the Court <Icon name="verdict" size={16} className="btn-ico" />
           </button>
         </div>
       </div>

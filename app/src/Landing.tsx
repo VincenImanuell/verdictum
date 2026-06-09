@@ -6,6 +6,7 @@ import { EXPLORER } from "./wagmi";
 import Docket from "./components/Docket";
 import Seal from "./components/Seal";
 import Typewriter from "./components/Typewriter";
+import Icon from "./components/Icon";
 
 const FOCI: [string, string][] = [
   ["EVIDENCE", "concrete proof, data & numbers"],
@@ -321,7 +322,7 @@ export default function Landing() {
           </div>
 
           <div className="credband reveal">
-            <div className="moat-ico">🔒</div>
+            <div className="moat-ico"><Icon name="soulbound" size={26} /></div>
             <div>
               <h3>And the proof can't be faked, either.</h3>
               <p>

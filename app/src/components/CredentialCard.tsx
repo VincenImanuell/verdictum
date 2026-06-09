@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { usePublicClient } from "wagmi";
 import { ADDR, credAbi } from "../contracts";
 import { EXPLORER } from "../wagmi";
+import Icon from "./Icon";
 
 interface Meta {
   challenge: string;
@@ -67,7 +68,7 @@ export default function CredentialCard({ tokenId, community }: { tokenId: bigint
         </div>
         <div className="spread" style={{ marginTop: 12 }}>
           <span className="lock">
-            🔒 Soulbound · ERC-5192 · non-transferable
+            <Icon name="soulbound" size={14} className="ico-pad" /> Soulbound · ERC-5192 · non-transferable
           </span>
           <a target="_blank" href={`${EXPLORER}/token/${ADDR.credential}/instance/${tokenId.toString()}`}>
             View on explorer ↗
