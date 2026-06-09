@@ -16,6 +16,9 @@ export default function Header() {
           </div>
         </Link>
         <div className="row">
+          <Link to="/" className="btn btn-ghost back-home">
+            ← Home
+          </Link>
           <ConnectButton showBalance={false} chainStatus="icon" accountStatus="address" />
         </div>
       </div>

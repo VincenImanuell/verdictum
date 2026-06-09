@@ -12,7 +12,7 @@ interface Meta {
   focus: string;
 }
 
-export default function CredentialCard({ tokenId }: { tokenId: bigint }) {
+export default function CredentialCard({ tokenId, community }: { tokenId: bigint; community?: boolean }) {
   const client = usePublicClient();
   const [img, setImg] = useState<string | null>(null);
   const [meta, setMeta] = useState<Meta | null>(null);
@@ -42,8 +42,11 @@ export default function CredentialCard({ tokenId }: { tokenId: bigint }) {
   return (
     <div className="cred" style={{ marginTop: 14 }}>
       <div className="cred-inner">
-        <div className="eyebrow" style={{ color: "var(--gold)", marginBottom: 10 }}>
-          Soulbound credential minted
+        <div className="spread" style={{ marginBottom: 10 }}>
+          <span className="eyebrow" style={{ color: "var(--gold)" }}>
+            Soulbound credential minted
+          </span>
+          {community && <span className="commtag">COMMUNITY</span>}
         </div>
         <img src={img} alt="Verdictum certificate" />
         <div className="kv">

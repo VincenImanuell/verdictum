@@ -3,7 +3,30 @@
 Platform (IAgentRequester): `0x037Bb9C718F3f7fe5eCBDB0b600D607b52706776`
 Explorer: https://shannon-explorer.somnia.network
 
-## ⭐⭐ V2 — MULTI-CHALLENGE SET (CANONICAL — use these for the demo/frontend)
+## ⭐⭐⭐ V3 — MULTI-CHALLENGE + USER-GENERATED EXAMINERS (CANONICAL — use these for the demo/frontend)
+
+Redeploy (2026-06-09) adds **permissionless community examiners**: `createChallenge(string label, string persona)`
+lets ANYONE register their own examiner for a `CREATE_CHALLENGE_FEE` = **0.5 STT** anti-spam fee. The contract
+still appends the inescapable `FIXED_RULES` security/output suffix, so a community author cannot weaken the
+anti-injection defense or change the allowed tokens. Community examiners are marked by a non-zero
+`challengeCreator(id)` (curated ones are `address(0)`), so the UI badges them — and any credential they mint —
+distinctly. Ids are content+author addressed (`keccak256(abi.encode(creator, label, persona))`); examiners are
+immutable once registered. The fee accrues in the judge and is swept by the owner via `withdraw()`.
+
+| Contract | Address | Role |
+|---|---|---|
+| `VerdictumJudge` | `0xa169b1528D6CB9Ac790D2A76802E1BDe0d0dB93C` | multi-challenge examiner + `createChallenge`; injects season+focus+strictness; `submit(bytes32, string)` |
+| `Credential` (ERC-5192) | `0x3203332165Fa483e317095DcBA7d56d2ED4E15bC` | soulbound; on-chain SVG cert stamped Season · Focus; judge = sole minter |
+| `Inspector` (Governor) | `0xbC5976F8bDB470D43D58C88BA89Bd08711aF9Ee0` | permissionless `tick()`→`inferNumber` strictness AND time-gated `advanceSeason()`→`inferString` picks the season focus |
+
+Wiring verified on redeploy: `cred.JUDGE()`=judge, `judge.credential()`=Credential, `currentStrictness`=50,
+`currentSeason`=1, `currentFocus`="OVERALL", `challengeCount`=3 (curated seed re-registered), `CREATE_CHALLENGE_FEE`=0.5 STT.
+seasonLength=120s for the demo. The three curated ids are unchanged (keccak of the handles), so existing
+frontend copy/icons still map.
+
+---
+
+## V2 — MULTI-CHALLENGE SET (superseded by V3 above; addresses below are the OLD deploy)
 
 The job-screening pivot + **AUTONOMOUS SEASONS** (2026-06-03/04): one contract hosts many curated examiner
 skins (Job Application Screening = global flagship), each persona composed with an inescapable security

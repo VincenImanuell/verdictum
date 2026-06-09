@@ -153,7 +153,7 @@ export default function SubmitPanel() {
         </div>
       )}
 
-      {verdict === 1 && tokenId > 0n && <CredentialCard tokenId={tokenId} />}
+      {verdict === 1 && tokenId > 0n && <CredentialCard tokenId={tokenId} community={challenge.community} />}
     </section>
   );
 }

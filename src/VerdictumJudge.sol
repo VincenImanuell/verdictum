@@ -30,6 +30,7 @@ contract VerdictumJudge {
     IAgentRequester public constant PLATFORM = IAgentRequester(0x037Bb9C718F3f7fe5eCBDB0b600D607b52706776);
     uint256 public constant SUBCOMMITTEE_SIZE = 3;
     uint256 public constant PRICE_PER_AGENT = 0.07 ether; // LLM Inference price (Somnia gas-fees docs)
+    uint256 public constant CREATE_CHALLENGE_FEE = 0.5 ether; // anti-spam fee to register a COMMUNITY examiner
 
     uint256 public immutable LLM_AGENT_ID;
     address public immutable OWNER;
@@ -53,6 +54,7 @@ contract VerdictumJudge {
 
     mapping(bytes32 => Challenge) public challenges; // id => curated examiner
     bytes32[] public challengeIds; // enumerable list of all curated ids
+    mapping(bytes32 => address) public challengeCreator; // id => community author; address(0) == curated (owner-seeded)
 
     uint8 public strictness = 50; // fallback difficulty until an Inspector is wired in
     uint256 public constant MAX_STATEMENT_BYTES = 2000;
@@ -124,6 +126,7 @@ contract VerdictumJudge {
     uint256 public lastTokenId;
 
     event ChallengeAdded(bytes32 indexed id, string label);
+    event ChallengeCreated(bytes32 indexed id, address indexed creator, string label);
     event Submitted(
         uint256 indexed requestId,
         address indexed petitioner,
@@ -184,12 +187,44 @@ contract VerdictumJudge {
     function addChallenge(bytes32 id, string calldata label, string calldata persona) external {
         if (msg.sender != OWNER) revert NotOwner();
         if (id == bytes32(0)) revert BadInput(); // reserve 0 as "none"
-        if (challenges[id].exists) revert AlreadyInitialized();
+        _validateChallengeText(label, persona);
+        _register(id, label, persona); // curated: challengeCreator stays address(0)
+        emit ChallengeAdded(id, label);
+    }
+
+    /// @notice Permissionless: ANYONE can register a COMMUNITY examiner for a small anti-spam fee. The
+    ///         label/persona caps are identical to the curated registry, and the contract ALWAYS appends
+    ///         FIXED_RULES, so a community author can no more weaken the anti-injection defense or change
+    ///         the allowed tokens than the owner can. The id is content+author addressed: two authors may
+    ///         register the same text, but a single author can never silently mutate a live examiner (an
+    ///         examiner a credential was issued under must stay immutable). A non-zero `challengeCreator`
+    ///         marks it community, so the UI can badge it — and any credential it mints — distinctly from
+    ///         the curated set. The fee accrues in the contract and is swept by the owner via withdraw().
+    function createChallenge(string calldata label, string calldata persona)
+        external
+        payable
+        returns (bytes32 id)
+    {
+        if (msg.value < CREATE_CHALLENGE_FEE) revert Underfunded(CREATE_CHALLENGE_FEE, msg.value);
+        _validateChallengeText(label, persona);
+        id = keccak256(abi.encode(msg.sender, label, persona));
+        _register(id, label, persona); // reverts AlreadyInitialized on a duplicate
+        challengeCreator[id] = msg.sender;
+        emit ChallengeCreated(id, msg.sender, label);
+        emit ChallengeAdded(id, label);
+    }
+
+    /// @dev Shared label/persona bounds for both the curated and the community registry.
+    function _validateChallengeText(string calldata label, string calldata persona) internal pure {
         if (bytes(label).length == 0 || bytes(label).length > 64) revert BadInput();
         if (bytes(persona).length == 0 || bytes(persona).length > 2400) revert BadInput();
+    }
+
+    /// @dev Store an immutable examiner skin and append it to the enumerable list.
+    function _register(bytes32 id, string calldata label, string calldata persona) internal {
+        if (challenges[id].exists) revert AlreadyInitialized();
         challenges[id] = Challenge(label, persona, true);
         challengeIds.push(id);
-        emit ChallengeAdded(id, label);
     }
 
     function challengeCount() external view returns (uint256) {

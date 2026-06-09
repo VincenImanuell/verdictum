@@ -26,9 +26,14 @@ contract VerdictumJudgeTest is Test {
     string constant PERSONA =
         "You are a seasoned technical recruiter screening a written job application. Be firm but fair.";
 
+    string constant COMMUNITY_PERSONA =
+        "You are a venture capitalist hearing a 60-second startup pitch. Reward a clear problem, a credible wedge, and real traction.";
+
     function setUp() public {
         judge = new VerdictumJudge(AGENT_ID);
     }
+
+    receive() external payable {} // so the owner (this contract) can be paid by withdraw()
 
     function _wireCredential() internal {
         judge.setCredential(address(new Credential(address(judge))));
@@ -88,6 +93,86 @@ contract VerdictumJudgeTest is Test {
     function test_GetUnknownChallengeReverts() public {
         vm.expectRevert(VerdictumJudge.UnknownChallenge.selector);
         judge.getChallenge(keccak256("nope"));
+    }
+
+    // --- community (permissionless) challenge registry -----------------------------------------
+
+    function test_CreateChallengePermissionlessAndRecordsCreator() public {
+        address author = address(0xCAFE);
+        vm.deal(author, 1 ether);
+        vm.prank(author);
+        bytes32 id = judge.createChallenge{value: 0.5 ether}("Pitch to a VC", COMMUNITY_PERSONA);
+
+        assertEq(judge.challengeCount(), 1);
+        assertEq(judge.challengeIds(0), id);
+        assertEq(judge.challengeCreator(id), author); // non-zero => community
+        (string memory label, string memory persona) = judge.getChallenge(id);
+        assertEq(label, "Pitch to a VC");
+        assertEq(persona, COMMUNITY_PERSONA);
+        assertEq(address(judge).balance, 0.5 ether); // fee held until withdraw
+    }
+
+    function test_CreatedChallengeIdIsContentAndAuthorAddressed() public {
+        address author = address(0xCAFE);
+        bytes32 expected = keccak256(abi.encode(author, "Pitch to a VC", COMMUNITY_PERSONA));
+        vm.deal(author, 1 ether);
+        vm.prank(author);
+        bytes32 id = judge.createChallenge{value: 0.5 ether}("Pitch to a VC", COMMUNITY_PERSONA);
+        assertEq(id, expected);
+    }
+
+    function test_CuratedChallengeHasZeroCreator() public {
+        _addJob();
+        assertEq(judge.challengeCreator(JOB), address(0)); // curated => sentinel zero
+    }
+
+    function test_CreateChallengeRequiresFee() public {
+        vm.deal(address(0xCAFE), 1 ether);
+        vm.prank(address(0xCAFE));
+        vm.expectRevert(); // Underfunded(needed, sent)
+        judge.createChallenge{value: 0.49 ether}("Pitch to a VC", COMMUNITY_PERSONA);
+    }
+
+    function test_CreateChallengeRejectsEmptyLabelOrPersona() public {
+        vm.deal(address(this), 2 ether);
+        vm.expectRevert(VerdictumJudge.BadInput.selector);
+        judge.createChallenge{value: 0.5 ether}("", COMMUNITY_PERSONA);
+        vm.expectRevert(VerdictumJudge.BadInput.selector);
+        judge.createChallenge{value: 0.5 ether}("X", "");
+    }
+
+    function test_CreateChallengeRejectsDuplicateFromSameAuthor() public {
+        vm.deal(address(this), 2 ether);
+        judge.createChallenge{value: 0.5 ether}("Pitch to a VC", COMMUNITY_PERSONA);
+        vm.expectRevert(VerdictumJudge.AlreadyInitialized.selector);
+        judge.createChallenge{value: 0.5 ether}("Pitch to a VC", COMMUNITY_PERSONA);
+    }
+
+    function test_CommunityChallengeIsSubmittable() public {
+        _wireCredential();
+        vm.deal(address(this), 2 ether);
+        bytes32 id = judge.createChallenge{value: 0.5 ether}("Pitch to a VC", COMMUNITY_PERSONA);
+
+        vm.mockCall(
+            PLATFORM, abi.encodeWithSelector(IAgentRequester.getRequestDeposit.selector), abi.encode(uint256(0.03 ether))
+        );
+        vm.mockCall(PLATFORM, abi.encodeWithSelector(IAgentRequester.createRequest.selector), abi.encode(uint256(5151)));
+        uint256 rid =
+            judge.submit{value: 0.24 ether}(id, "We cut mid-market SaaS churn 40%; here is the wedge and the traction.");
+        assertEq(rid, 5151);
+        assertEq(judge.requestChallenge(5151), id);
+    }
+
+    function test_CreateChallengeFeeWithdrawableByOwner() public {
+        vm.deal(address(0xCAFE), 1 ether);
+        vm.prank(address(0xCAFE));
+        judge.createChallenge{value: 0.5 ether}("Pitch to a VC", COMMUNITY_PERSONA);
+        assertEq(address(judge).balance, 0.5 ether);
+
+        uint256 before = address(this).balance;
+        judge.withdraw(); // owner == this test contract
+        assertEq(address(judge).balance, 0);
+        assertEq(address(this).balance, before + 0.5 ether);
     }
 
     // --- submit guards -------------------------------------------------------------------------

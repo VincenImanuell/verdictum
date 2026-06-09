@@ -3,9 +3,9 @@ import type { Address, Hex } from "viem";
 /// Season-aware multi-challenge set — Somnia Shannon (see repo/deployments.md).
 /// NOTE: addresses are updated by script/deploy_v2.sh on each redeploy.
 export const ADDR = {
-  judge: "0x16CBe69E9890eaC1E483f434eBa7Dc514703Db6a" as Address,
-  credential: "0x93F333e11c771AeAD2E6f2e4F8Ff1E73C544c963" as Address,
-  inspector: "0xCd98B29737F2aC9C04225504b68D630Cd83A3Dc1" as Address,
+  judge: "0xa169b1528D6CB9Ac790D2A76802E1BDe0d0dB93C" as Address,
+  credential: "0x3203332165Fa483e317095DcBA7d56d2ED4E15bC" as Address,
+  inspector: "0xbC5976F8bDB470D43D58C88BA89Bd08711aF9Ee0" as Address,
   platform: "0x037Bb9C718F3f7fe5eCBDB0b600D607b52706776" as Address,
 } as const;
 
@@ -20,6 +20,31 @@ export const judgeAbi = [
     ],
     outputs: [{ type: "uint256" }],
   },
+  {
+    type: "function",
+    name: "createChallenge",
+    stateMutability: "payable",
+    inputs: [
+      { name: "label", type: "string" },
+      { name: "persona", type: "string" },
+    ],
+    outputs: [{ type: "bytes32" }],
+  },
+  { type: "function", name: "CREATE_CHALLENGE_FEE", stateMutability: "view", inputs: [], outputs: [{ type: "uint256" }] },
+  { type: "function", name: "challengeCount", stateMutability: "view", inputs: [], outputs: [{ type: "uint256" }] },
+  { type: "function", name: "challengeIds", stateMutability: "view", inputs: [{ type: "uint256" }], outputs: [{ type: "bytes32" }] },
+  {
+    type: "function",
+    name: "challenges",
+    stateMutability: "view",
+    inputs: [{ type: "bytes32" }],
+    outputs: [
+      { name: "label", type: "string" },
+      { name: "persona", type: "string" },
+      { name: "exists", type: "bool" },
+    ],
+  },
+  { type: "function", name: "challengeCreator", stateMutability: "view", inputs: [{ type: "bytes32" }], outputs: [{ type: "address" }] },
   { type: "function", name: "currentStrictness", stateMutability: "view", inputs: [], outputs: [{ type: "uint8" }] },
   { type: "function", name: "currentFocus", stateMutability: "view", inputs: [], outputs: [{ type: "string" }] },
   { type: "function", name: "currentSeason", stateMutability: "view", inputs: [], outputs: [{ type: "uint32" }] },
@@ -33,6 +58,15 @@ export const judgeAbi = [
       { name: "strictness", type: "uint8", indexed: false },
       { name: "season", type: "uint32", indexed: false },
       { name: "focus", type: "string", indexed: false },
+    ],
+  },
+  {
+    type: "event",
+    name: "ChallengeCreated",
+    inputs: [
+      { name: "id", type: "bytes32", indexed: true },
+      { name: "creator", type: "address", indexed: true },
+      { name: "label", type: "string", indexed: false },
     ],
   },
   {
@@ -118,6 +152,8 @@ export interface Challenge {
   title: string;
   sub: string;
   ph: string;
+  community?: boolean; // registered on-chain by a user via createChallenge (vs. curated)
+  creator?: Address; // the community author, when community === true
 }
 
 export const CHALLENGES: Challenge[] = [
@@ -151,3 +187,13 @@ export const CHALLENGES: Challenge[] = [
     ph: "Choose an object and sell it: who needs it, the one problem it solves, and why now — make it impossible to say no…",
   },
 ];
+
+/// Ids the on-chain enumeration should NOT surface as community challenges: the curated set (shown with
+/// hand-written copy above) plus the retired "Defend Yourself From Mom" examiner, still registered but
+/// no longer listed. Anything else returned by challengeIds() is a user-created community examiner.
+export const HIDDEN_CHALLENGE_IDS: ReadonlySet<string> = new Set(
+  [
+    ...CHALLENGES.map((c) => c.id),
+    "0xb0e078d425b932d86768fbae797f20fc71289b343659bc2ba92b663663d475da", // retired: Defend Yourself From Mom
+  ].map((id) => id.toLowerCase()),
+);
