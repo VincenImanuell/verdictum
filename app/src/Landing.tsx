@@ -201,7 +201,6 @@ export default function Landing() {
       <header className={`lnav${scrolled ? " scrolled" : ""}`}>
         <div className="lwrap lnav-in">
           <Link to="/" className="brand" style={{ color: "inherit", textDecoration: "none" }}>
-            <Seal />
             <div className="word">VERDICTUM</div>
           </Link>
           <nav className="lnav-links">
