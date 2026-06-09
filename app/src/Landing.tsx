@@ -7,7 +7,7 @@ import Docket from "./components/Docket";
 import Seal from "./components/Seal";
 import Typewriter from "./components/Typewriter";
 import Icon from "./components/Icon";
-import heroBg from "./assets/bg.jpg";
+import heroBg from "./assets/newbg.jpg";
 
 const FOCI: [string, string][] = [
   ["EVIDENCE", "concrete proof, data & numbers"],
