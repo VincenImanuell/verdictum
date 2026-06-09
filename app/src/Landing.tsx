@@ -238,7 +238,7 @@ export default function Landing() {
           </span>
           <h1>
             <Typewriter
-              speed={62}
+              speed={42}
               segments={[
                 { text: "An AI examiner that " },
                 { text: "can't be bribed", cls: "g" },
