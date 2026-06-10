@@ -95,6 +95,24 @@ Only a tiny surface ever enters consensus: **one of three enum values, plus one 
 
 ---
 
+## Built on Somnia's Agentic L1 — exactly as the platform is designed
+
+Verdictum is not "an app that also touches Somnia Agents" — every load-bearing decision in the system is executed by the platform, the way the [official Somnia Agents docs](https://docs.somnia.network/agents) describe it. Point by point:
+
+| Somnia Agents platform feature | How Verdictum uses it |
+|---|---|
+| **LLM Inference base agent** (Phase 1, curated) | The only agent we invoke — `inferString` constrained to `[PASS, REVISE, FAIL]` for every verdict and to six curated tokens for season focus; `inferNumber` clamped `0..100` for strictness. No custom agent needed, no off-chain kit used. |
+| **Deterministic LLMs** (fixed seed, controlled temperature → identical output on every node) | The property the whole product stands on: determinism is what lets a *subjective judgment* become something validators can independently recompute and agree on. We meet it halfway by keeping the consensus surface tiny — one enum + one clamped integer, never free text. |
+| **Majority consensus over a decentralized node subset** | A verdict exists only when the subcommittee majority agrees — that is the literal meaning of our "consensus-validated examiner". No single evaluator, no oracle to trust. |
+| **Async invocation + ABI-encoded callback** | `submit()` → `PLATFORM.createRequest(...)` → consensus → `handleResponse(requestId, responses, status)` finalizes on-chain ([`VerdictumJudge.sol`](./src/VerdictumJudge.sol)). Three independent callback flows: verdict, strictness, season focus. |
+| **Deposit model** (operations reserve = `minPerAgentDeposit × subcommitteeSize` + agent reward pot, leftover rebated) | Deposits are sized exactly per the docs — `PLATFORM.getRequestDeposit() + PRICE_PER_AGENT × SUBCOMMITTEE_SIZE` — computed live in the contract and surfaced automatically in the UI. |
+| **Permissionless — anyone can invoke** | All four core entrypoints are permissionless: `submit()`, `tick()`, `advanceSeason()`, `createChallenge()`. Any human **or any agent** can call them; the contracts are source-verified, so the ABI is publicly discoverable with no UI in the loop. |
+| **Failure modes** (no majority → rejected) | `Failed` / `TimedOut` close a request as a safe no-op (decode guard; a malformed response can't strand a request). A no-consensus outcome can never mint a credential — the failure direction is safe by construction. |
+| **Auditability (receipts)** | Every inference that decided a verdict, a strictness value, or a season is a public on-chain request whose execution can be retrospectively inspected. |
+| **Prototype notice** | Acknowledged honestly (see [Honest notes](#honest-notes)); the interface was re-verified against the live docs before deploy. |
+
+---
+
 ## The autonomy layer — a self-running Governor (exam seasons)
 
 The second agent doesn't just set a number — it **runs the institution itself.** Both of its functions are **permissionless** (no admin gate) and both are decided by the LLM in consensus, not by a human:
@@ -197,6 +215,35 @@ Real, existing paid markets validate willingness to pay: application/essay coach
 - **B2B** — recruiters / institutions consume or white-label credentials; the public verify page is the hook. The credential's value to a third party is exactly what the un-bribable, consensus-run judge makes possible.
 
 The demo proves the *mechanism*; the business is the narrative around it. (Not built: checkout, subscriptions, fee-split, dashboards.)
+
+---
+
+## For the Agentathon judges — the evidence map
+
+Where to look for each judging criterion, in two minutes:
+
+**Functionality — it works, deployed, live.**
+- Live dapp: **https://verdictum-iota.vercel.app/** (Somnia Shannon, chain id 50312). Every demo moment is a real on-chain transaction — there are no mocks anywhere in the flow.
+- **52 Foundry unit tests, all green** (`FOUNDRY_PROFILE=ci forge test`) covering verdict paths, mint rules, all three callback flows, injection fences, and community-examiner validation; CI runs them on every push.
+- **All three contracts are source-verified** on shannon-explorer (links in the address table above) — the deployed bytecode provably matches this repo.
+- Live end-to-end scripts: [`smoke_test.sh`](./script/smoke_test.sh) (submit → consensus → mint) and [`jailbreak_gauntlet.sh`](./script/jailbreak_gauntlet.sh) (adversarial).
+
+**Agent-First Design — agents hold the authority, and agents can call it.**
+- The judgment itself is executed by Somnia's native agent platform *inside consensus* — the agent isn't a feature bolted onto the app; it **is** the product (see the L1 table above).
+- Agent-native outward, too: `submit()`, `tick()`, `advanceSeason()`, `createChallenge()` are permissionless and machine-callable, and the verified ABI makes the system discoverable — another agent can find Verdictum on the explorer and invoke it with no UI and no human.
+- A keeper agent ships in the repo ([`heartbeat.sh`](./script/heartbeat.sh)) and drives the institution on a clock.
+
+**Innovation & Technical Creativity — primitives used in ways that don't exist elsewhere.**
+- **The verdict is the transaction** — every prior "AI judge" design stamps an off-chain result on-chain; here the judgment is recomputed inside validator consensus.
+- **Self-governing exam seasons** — the LLM, not a human, decides each season's strictness and scrutiny focus, and that ruling is injected into every subsequent verdict.
+- **Fully on-chain credential** — the ERC-5192 certificate renders from a `tokenURI` SVG computed in the contract: no server, no IPFS.
+- **Contract-level anti-injection armor** — untrusted, permissionlessly-published community rubrics are wrapped in byte-screening, delimiter fencing, and an inescapable security suffix the author cannot remove.
+- **Tiny consensus surface as a design principle** — one enum + one clamped integer ever enter consensus, which is what makes subjective judgment consensus-able at all.
+
+**Autonomous Performance — it runs itself, and stays up.**
+- The Inspector recalibrates strictness (`tick()` → `inferNumber`) and opens new seasons (`advanceSeason()` → `inferString`) with **zero human input** — both permissionless, both decided by the LLM in consensus.
+- **Proven live:** `advanceSeason()` autonomously moved the world from *Season 1 · OVERALL* to *Season 2 · NOVELTY*; the same application can PASS one season and FAIL the next.
+- Stability: temperature-0 determinism, decode guards on every callback (a malformed response can't strand a request), safe `Failed`/`TimedOut` handling, and a 6-attack live jailbreak gauntlet with **0 leaked PASSes**.
 
 ---
 
