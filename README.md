@@ -7,6 +7,7 @@ No server scored you. No company stamped your certificate. The chain did — and
 Verdictum is a **consensus-validated AI examiner** plus an **unforgeable, soulbound credential** for any high-stakes *written* argument. You submit free text; an on-chain LLM running *inside Somnia's validator consensus* returns a verdict (`PASS` / `REVISE` / `FAIL`); a `PASS` mints a non-transferable, self-rendering certificate to your wallet. A second, fully autonomous agent **runs the exam itself** — recalibrating how strict it is and choosing, each season, what to scrutinise most — with no human in the loop.
 
 > **Live demo:** **https://verdictum-iota.vercel.app/** · Live on Somnia Shannon testnet — every verdict below is a real on-chain transaction (addresses + explorer links at the end).
+> **Demo video:** **https://youtu.be/PBPrdTi5JY0**
 
 ---
 
