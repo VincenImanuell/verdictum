@@ -12,7 +12,7 @@ Verdictum is a **consensus-validated AI examiner** plus an **unforgeable, soulbo
 
 ## Why this is novel (the moat)
 
-Every previous on-chain "AI judge" runs the AI **off-chain** and lets a contract rubber-stamp the result. That doesn't remove trust — it just moves it to *"whoever ran the model."*
+Conventional on-chain "AI judge" designs run the AI **off-chain** and let a contract rubber-stamp the result. That doesn't remove trust — it just moves it to *"whoever ran the model."*
 
 Somnia runs the LLM **inside the validator subcommittee** (fixed seed, temperature 0, majority consensus). The judgment itself is recomputed and agreed on by validators, so a subjective decision becomes a **consensus-validated fact** — there is no single evaluator to trust, and no operator who can quietly run the model "for you."
 
@@ -234,7 +234,7 @@ Where to look for each judging criterion, in two minutes:
 - A keeper agent ships in the repo ([`heartbeat.sh`](./script/heartbeat.sh)) and drives the institution on a clock.
 
 **Innovation & Technical Creativity — primitives used in ways that don't exist elsewhere.**
-- **The verdict is the transaction** — every prior "AI judge" design stamps an off-chain result on-chain; here the judgment is recomputed inside validator consensus.
+- **The verdict is the transaction** — conventional "AI judge" designs stamp an off-chain result on-chain; here the judgment is recomputed inside validator consensus.
 - **Self-governing exam seasons** — the LLM, not a human, decides each season's strictness and scrutiny focus, and that ruling is injected into every subsequent verdict.
 - **Fully on-chain credential** — the ERC-5192 certificate renders from a `tokenURI` SVG computed in the contract: no server, no IPFS.
 - **Contract-level anti-injection armor** — untrusted, permissionlessly-published community rubrics are wrapped in byte-screening, delimiter fencing, and an inescapable security suffix the author cannot remove.
